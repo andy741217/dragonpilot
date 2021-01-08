@@ -24,8 +24,8 @@ class CarInterface(CarInterfaceBase):
     return float(accel) / 1.0
 
   @staticmethod
-  def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=[]):  # pylint: disable=dangerous-default-value
-    ret = CarInterfaceBase.get_std_params(candidate, fingerprint)
+  def get_params(candidate, fingerprint=gen_empty_fingerprint(), has_relay=False, car_fw=[]):  # pylint: disable=dangerous-default-value
+    ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
 
     ret.carName = "hyundai"
     ret.safetyModel = car.CarParams.SafetyModel.hyundai
@@ -222,7 +222,7 @@ class CarInterface(CarInterfaceBase):
     if ret.radarOffCan or (ret.sccBus == 2) or Params().get('EnableOPwithCC') == b'0':
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc
 
-    if ret.mdpsHarness or opParams().get('smartMDPS'):
+    if ret.mdpsHarness or Params().get('SccEnabled') == b'1':
       ret.minSteerSpeed = 0.
 
     ret.centerToFront = ret.wheelbase * 0.4
