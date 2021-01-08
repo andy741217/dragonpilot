@@ -323,7 +323,7 @@ class CarInterface(CarInterfaceBase):
                 and ((self.CC.setspeed > self.CC.clu11_speed - 2) or ret.standstill or self.CC.usestockscc):
           events.add(EventName.buttonEnable)
           events.add(EventName.pcmEnable)
-        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton and opParams().get('enableLKASbutton'):
+        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton and Params().get('enableLKASbutton'):
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
         if b.type == ButtonType.altButton3 and b.pressed:
