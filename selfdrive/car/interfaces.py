@@ -103,8 +103,7 @@ class CarInterfaceBase():
     
     if cs_out.gearShifter == GearShifter.reverse:
       events.add(EventName.reverseGear)
-    if not self.dragonconf.dpAtl and not cs_out.cruiseState.available:
-      events.add(EventName.wrongCarMode)
+    
     if cs_out.espDisabled:
       events.add(EventName.espDisabled)
     if cs_out.gasPressed and not self.dragonconf.dpAllowGas and not self.dragonconf.dpAtl:
