@@ -69,7 +69,8 @@ class opParams:
                         'RadarDisableEnabled': Param(False, bool, 'Turn on for Stock Radar to disable'),
                         'enableLKASbutton': Param(True, bool, 'general toggle to enable LKAS button, LKAS button press will cancel OP steer'),
                         'Enable_INDI': Param(True, bool, 'Toggle to enable INDI'),
-                        'uniqueID': Param(None, [type(None), str], 'User\'s unique ID')
+                        'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
+                        'smartMDPS': Param(True, bool, 'Toggle to enable smartMDPS')
                        }
 
     self._params_file = '/data/op_params.json'
