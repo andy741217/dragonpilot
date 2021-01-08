@@ -100,8 +100,7 @@ class CarInterfaceBase():
       events.add(EventName.doorOpen)
     if cs_out.seatbeltUnlatched:
       events.add(EventName.seatbeltNotLatched)
-    if self.dragonconf.dpGearCheck and cs_out.gearShifter != GearShifter.drive and cs_out.gearShifter not in extra_gears:
-      events.add(EventName.wrongGear)
+    
     if cs_out.gearShifter == GearShifter.reverse:
       events.add(EventName.reverseGear)
     if not self.dragonconf.dpAtl and not cs_out.cruiseState.available:
