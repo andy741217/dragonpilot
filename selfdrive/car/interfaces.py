@@ -112,16 +112,13 @@ class CarInterfaceBase():
       events.add(EventName.stockFcw)
     if cs_out.stockAeb:
       events.add(EventName.stockAeb)
-    if cs_out.vEgo > self.dragonconf.dpMaxCtrlSpeed:
-      events.add(EventName.speedTooHigh)
+    
     if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
 
-    if not self.dragonconf.dpLatCtrl:
-      events.add(EventName.manualSteeringRequired)
-    elif self.dragonconf.dpSteeringOnSignal and (cs_out.leftBlinker or cs_out.rightBlinker):
-      events.add(EventName.manualSteeringRequiredBlinkersOn)
-    elif cs_out.steerError:
+    
+    
+    if cs_out.steerError:
       events.add(EventName.steerUnavailable)
     elif cs_out.steerWarning:
       events.add(EventName.steerTempUnavailable)
