@@ -201,7 +201,7 @@ def create_fca12(packer):
 
 def create_mdps12(packer, frame, mdps12):
   values = mdps12
-  if opParams().get('enableLKASbutton'):
+  if Params().get('enableLKASbutton'):
     values["CF_Mdps_ToiActive"] = 0
     values["CF_Mdps_ToiUnavail"] = 1
     values["CF_Mdps_MsgCount2"] = frame % 0x100
