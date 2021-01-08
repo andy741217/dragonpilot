@@ -49,26 +49,14 @@ class CarInterface(CarInterfaceBase):
     ret.gasMaxV = [2., 2., 2., 1.68, 1.3]
     ret.brakeMaxBP = [0., 5., 5.1]
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
-    ret.longitudinalTuning.kfBP = [0., 5., 10., 20., 30.]
-    ret.longitudinalTuning.kfV = [1., 1., 1., .75, .5]
 
-    ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
-    ret.lateralTuning.pid.kiBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
-    ret.lateralTuning.pid.kfBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kfV = [0.000015, 0.00002, 0.000025]
 
-    if opParams().get('Enable_INDI'):
+    if Params().get('Enable_INDI') == b'1':
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGainBP = [0.]
-      ret.lateralTuning.indi.innerLoopGainV = [2.]
-      ret.lateralTuning.indi.outerLoopGainBP = [0.]
-      ret.lateralTuning.indi.outerLoopGainV = [3.0]
-      ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.4]
-      ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
-      ret.lateralTuning.indi.actuatorEffectivenessV = [2.]
+      ret.lateralTuning.indi.outerLoopGain = 3.  # stock is 2.0.  Trying out 2.5
+      ret.lateralTuning.indi.innerLoopGain = 2.
+      ret.lateralTuning.indi.timeConstant = 1.4
+      ret.lateralTuning.indi.actuatorEffectiveness = 2.
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
