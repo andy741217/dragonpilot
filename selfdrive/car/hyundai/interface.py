@@ -3,8 +3,8 @@ from cereal import car
 from common.op_params import opParams
 from common.params import Params
 from selfdrive.config import Conversions as CV
-from selfdrive.car.hyundai.values import CAR, Buttons
-from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
+from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS, Buttons
+from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 
 EventName = car.CarEvent.EventName
@@ -31,12 +31,12 @@ class CarInterface(CarInterfaceBase):
     ret.safetyModel = car.CarParams.SafetyModel.hyundai
 
     # Most Hyundai car ports are community features for now
-    ret.communityFeature = candidate not in [CAR.SONATA, CAR.PALISADE]
+    ret.communityFeature = ret.enableGasInterceptor or candidate not in [CAR.SONATA, CAR.PALISADE]
 
-    ret.steerActuatorDelay = 0.3  # Default delay
+    ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.5
     ret.steerLimitTimer = 0.1
-    tire_stiffness_factor = 0.7
+    tire_stiffness_factor = 0.685
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
     ret.longitudinalTuning.kpBP = [0., .3, 10., 35.]
@@ -49,14 +49,17 @@ class CarInterface(CarInterfaceBase):
     ret.gasMaxV = [2., 2., 2., 1.68, 1.3]
     ret.brakeMaxBP = [0., 5., 5.1]
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
+    
+       
 
-
-    if opParams().get('Enable_INDI') == b'1':
+    if opParams().get('Enable_INDI'):
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.outerLoopGain = 3.  # stock is 2.0.  Trying out 2.5
-      ret.lateralTuning.indi.innerLoopGain = 2.
-      ret.lateralTuning.indi.timeConstant = 1.4
-      ret.lateralTuning.indi.actuatorEffectiveness = 2.
+      ret.lateralTuning.indi.innerLoopGain = 3.0
+      ret.lateralTuning.indi.outerLoopGainBP = [0]
+      ret.lateralTuning.indi.outerLoopGainV = [2.0]
+      ret.lateralTuning.indi.timeConstant = 1.0 if ret.hasZss else 1.0
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.5
+        
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
@@ -94,15 +97,10 @@ class CarInterface(CarInterfaceBase):
       ret.minSteerSpeed = 55 * CV.KPH_TO_MS
     elif candidate == CAR.GENESIS_G70:
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGainBP = [0.]
-      ret.lateralTuning.indi.innerLoopGainV = [3.]
-      ret.lateralTuning.indi.outerLoopGainBP = [0.]
-      ret.lateralTuning.indi.outerLoopGainV = [2.]
-      ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.]
-      ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
-      ret.lateralTuning.indi.actuatorEffectivenessV = [1.5]
-
+      ret.lateralTuning.indi.innerLoopGain = 3.0
+      ret.lateralTuning.indi.outerLoopGain = 2.0
+      ret.lateralTuning.indi.timeConstant = 1.0
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.5
       ret.mass = 1640.0 + STD_CARGO_KG
       ret.wheelbase = 2.84
       ret.steerRatio = 13.56
@@ -136,6 +134,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
+     
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
@@ -192,14 +191,16 @@ class CarInterface(CarInterfaceBase):
 
     ret.radarOffCan = (ret.sccBus == -1)
 
-    ret.openpilotLongitudinalControl = opParams().get('LongControlEnabled') == b'1' and not (ret.sccBus == 0)
+    ret.openpilotLongitudinalControl = opParams().get('LongControlEnabled') == True and not (ret.sccBus == 0)
 
     if ret.openpilotLongitudinalControl:
       ret.radarTimeStep = .05
 
+    
+
     if candidate in [ CAR.HYUNDAI_GENESIS, CAR.IONIQ_EV_LTD, CAR.IONIQ_HEV, CAR.KONA_EV, CAR.KIA_NIRO_EV, CAR.KIA_SORENTO, CAR.SONATA_2019,
                       CAR.KIA_OPTIMA, CAR.VELOSTER, CAR.KIA_STINGER, CAR.GENESIS_G70, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.GENESIS_G80,
-                      CAR.GENESIS_G90, CAR.KIA_CADENZA, CAR.KIA_CADENZA_HEV]:
+                      CAR.GENESIS_G90]:
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiLegacy
 
     if ret.mdpsHarness or \
@@ -210,7 +211,7 @@ class CarInterface(CarInterfaceBase):
     if ret.radarOffCan or (ret.sccBus == 2) or opParams().get('EnableOPwithCC') == b'0':
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc
 
-    if ret.mdpsHarness or opParams().get('SccEnabled') == b'1':
+    if ret.mdpsHarness or opParams().get('smartMDPS'):
       ret.minSteerSpeed = 0.
 
     ret.centerToFront = ret.wheelbase * 0.4
@@ -224,12 +225,14 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.enableCamera = True
+    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) \
+                       or has_relay
 
     ret.radarDisablePossible = opParams().get('RadarDisableEnabled') == b'1'
 
     ret.enableCruise = opParams().get('EnableOPwithCC') == b'1' and ret.sccBus == 0
 
+    
     if ret.radarDisablePossible:
       ret.openpilotLongitudinalControl = True
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc # todo based on toggle
@@ -245,7 +248,7 @@ class CarInterface(CarInterfaceBase):
     self.cp.update_strings(can_strings)
     self.cp2.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
-
+    
     ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
     ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
 
@@ -253,6 +256,7 @@ class CarInterface(CarInterfaceBase):
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
     events = self.create_common_events(ret)
+
 
     # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
     if ret.vEgo < (self.CP.minSteerSpeed + .56) and self.CP.minSteerSpeed > 10. and self.CC.enabled:
@@ -330,10 +334,13 @@ class CarInterface(CarInterfaceBase):
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
 
-    ret.events = events.to_msg()
+    
+    ret.events = events.to_msg() 
 
     self.CS.out = ret.as_reader()
     return self.CS.out
+    
+    
 
   def apply(self, c):
     can_sends = self.CC.update(c.enabled, self.CS, self.frame, c.actuators,
