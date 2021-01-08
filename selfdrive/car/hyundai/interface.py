@@ -228,7 +228,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.radarDisablePossible = opParams().get('RadarDisableEnabled') == b'1'
 
-    ret.enableCruise = Params().get('EnableOPwithCC') == b'1' and ret.sccBus == 0
+    ret.enableCruise = opParams().get('EnableOPwithCC') == b'1' and ret.sccBus == 0
 
     if ret.radarDisablePossible:
       ret.openpilotLongitudinalControl = True
