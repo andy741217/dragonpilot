@@ -1,4 +1,5 @@
 import crcmod
+from common.params import Params
 from selfdrive.car.hyundai.values import CAR, CHECKSUM
 
 hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
