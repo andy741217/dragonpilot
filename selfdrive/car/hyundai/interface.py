@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
 
 
-    if Params().get('Enable_INDI') == b'1':
+    if opParams().get('Enable_INDI') == b'1':
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.outerLoopGain = 3.  # stock is 2.0.  Trying out 2.5
       ret.lateralTuning.indi.innerLoopGain = 2.
