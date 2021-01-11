@@ -7,6 +7,7 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 class SteerLimitParams:
   def __init__(self, CP):
+    if Params().get('dp_hkg_smart_mdps') == b'1'
     self.STEER_MAX = 384
     self.STEER_DELTA_UP = 4
     self.STEER_DELTA_DOWN = 8
