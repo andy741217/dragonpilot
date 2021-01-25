@@ -129,7 +129,17 @@ class opParams:
                         'indi_time_constant_v': Param([2, 4, 5.5], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'indi_actuator_effectiveness_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'indi_actuator_effectiveness_v': Param([5, 10, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live')
+                        'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live'),
+                        'MdpsHarnessEnabled': Param(True, bool, 'Enable MDPS Harness support'),
+                        'SccEnabled': Param(True, bool, 'Car has stock SCC'),
+                        'SccHarnessPresent': Param(True, bool, 'Car has SCC Harness( scc moved to bus 2)'),
+                        'LongControlEnabled': Param(True, bool, 'only for NON SCC car, OP will send SCC message'),
+                        'EnableOPwithCC': Param(False, bool, 'Turn off if OP should not depend on SCC to engage'),
+                        'RadarDisableEnabled': Param(False, bool, 'Turn on for Stock Radar to disable'),
+                        'enableLKASbutton': Param(True, bool, 'general toggle to enable LKAS button, LKAS button press will cancel OP steer'),
+                        'Enable_INDI': Param(True, bool, 'Toggle to enable INDI'),
+                        'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
+                        'smartMDPS': Param(True, bool, 'Toggle to enable smartMDPS')
                        }
 
     self._params_file = '/data/op_params.json'
