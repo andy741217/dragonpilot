@@ -332,6 +332,9 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
+    leadDistance @10:Float32;
+    leadvRel @11:Float32;
+    leadyRel @12:Float32;
 
     enum VisualAlert {
       # these are the choices from the Honda
@@ -432,7 +435,17 @@ struct CarParams {
   communityFeature @46: Bool;  # true if a community maintained feature is detected
   fingerprintSource @49: FingerprintSource;
   networkLocation @50 :NetworkLocation;  # Where Panda/C2 is integrated into the car's CAN network
-
+  mdpsHarness @54: Bool;
+  sasBus @55: Int8;
+  fcaBus @56: Int8;
+  bsmAvailable @57: Bool;
+  lfaAvailable @58: Bool;
+  sccBus @59: Int8;
+  radarDisablePossible @60: Bool;
+  lvrAvailable @61: Bool;
+  evgearAvailable @62: Bool;
+  emsAvailable @63: Bool;
+  
   struct LateralParams {
     torqueBP @0 :List(Int32);
     torqueV @1 :List(Int32);
@@ -456,6 +469,8 @@ struct CarParams {
     kiV @3 :List(Float32);
     deadzoneBP @4 :List(Float32);
     deadzoneV @5 :List(Float32);
+    kfBP @6 :List(Float32);
+    kfV @7 :List(Float32);
   }
 
   struct LateralINDITuning {
@@ -514,6 +529,7 @@ struct CarParams {
     subaruLegacy @22;  # pre-Global platform
     hyundaiLegacy @23;
     hyundaiCommunity @24;
+    hyundaiCommunityNonscc @25;
   }
 
   enum SteerControlType {
