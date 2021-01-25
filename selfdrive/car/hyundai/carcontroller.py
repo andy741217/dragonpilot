@@ -10,7 +10,6 @@ from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURE
 from opendbc.can.packer import CANPacker
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.longcontrol import LongCtrlState
-from common.dp_common import common_controller_ctrl
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -102,14 +101,9 @@ class CarController():
 
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart,
-             set_speed, lead_visible, lead_dist, lead_vrel, lead_yrel, dragonconf):
+             set_speed, lead_visible, lead_dist, lead_vrel, lead_yrel):
 
     self.enabled = enabled
-    
-    # dp
-    self.last_blinker_on = False
-    self.blinker_end_frame = 0.
-    
     # gas and brake
     self.accel_lim_prev = self.accel_lim
     apply_accel = actuators.gas - actuators.brake
@@ -161,20 +155,7 @@ class CarController():
     sys_warning, sys_state, left_lane_warning, right_lane_warning =\
       process_hud_alert(enabled, self.car_fingerprint, visual_alert,
                         left_lane, right_lane, left_lane_depart, right_lane_depart)
-    
-    # dp
-    blinker_on = CS.out.leftBlinker or CS.out.rightBlinker
-    if not enabled:
-      self.blinker_end_frame = 0
-    if self.last_blinker_on and not blinker_on:
-      self.blinker_end_frame = frame + dragonconf.dpSignalOffDelay
-    apply_steer = common_controller_ctrl(enabled,
-                                         dragonconf,
-                                         blinker_on or frame < self.blinker_end_frame,
-                                         apply_steer, CS.out.vEgo)
 
-    self.last_blinker_on = blinker_on
-    
     speed_conv = CV.MS_TO_MPH if CS.is_set_speed_in_mph else CV.MS_TO_KPH
 
     self.clu11_speed = CS.clu11["CF_Clu_Vanz"]

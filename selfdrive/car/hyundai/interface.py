@@ -6,7 +6,6 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import CAR, Buttons
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-from common.dp_common import common_interface_atl
 
 EventName = car.CarEvent.EventName
 ButtonType = car.CarState.ButtonEvent.Type
@@ -242,42 +241,32 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def update(self, c, can_strings, dragonconf):
+  def update(self, c, can_strings):
     self.cp.update_strings(can_strings)
     self.cp2.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
-    
-    ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
-    self.dragonconf = dragonconf
-    if ret.vEgo >= self.CP.minSteerSpeed:
-      ret.cruiseState.enabled = common_interface_atl(ret, dragonconf.dpAtl)
-    ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
-    
-    events = self.create_common_events(ret)
-    # TODO: addd abs(self.CS.angle_steers) > 90 to 'steerTempUnavailable' event
-    
-    # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
-    if dragonconf.dpAtl:
-      if ret.vEgo < self.CP.minSteerSpeed:
-        events.add(car.CarEvent.EventName.belowSteerSpeed)
-    else:
-      # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
-      if ret.vEgo < (self.CP.minSteerSpeed + 2.) and self.CP.minSteerSpeed > 10.:
-        self.low_speed_alert = True
-      if ret.vEgo > (self.CP.minSteerSpeed + 4.):
-        self.low_speed_alert = False
-      if self.low_speed_alert:
-        events.add(car.CarEvent.EventName.belowSteerSpeed)
 
-    ret.events = events.to_msg()
-    
+    ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
+    ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
 
     # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
     events = self.create_common_events(ret)
 
-
+    # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
+    if ret.vEgo < (self.CP.minSteerSpeed + .56) and self.CP.minSteerSpeed > 10. and self.CC.enabled:
+      if not self.low_speed_alert and self.belowspeeddingtimer < 100:
+        events.add(car.CarEvent.EventName.belowSteerSpeedDing)
+        self.belowspeeddingtimer +=1
+      else:
+        self.belowspeeddingtimer = 0.
+        self.low_speed_alert = True
+    if ret.vEgo > (self.CP.minSteerSpeed + .84) or not self.CC.enabled:
+      self.low_speed_alert = False
+      self.belowspeeddingtimer = 0.
+    if self.low_speed_alert:
+      events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     if self.CP.sccBus == 2:
       self.CP.enableCruise = self.CC.usestockscc
@@ -351,6 +340,6 @@ class CarInterface(CarInterfaceBase):
                                c.cruiseControl.cancel, c.hudControl.visualAlert, c.hudControl.leftLaneVisible,
                                c.hudControl.rightLaneVisible, c.hudControl.leftLaneDepart, c.hudControl.rightLaneDepart,
                                c.hudControl.setSpeed, c.hudControl.leadVisible, c.hudControl.leadDistance,
-                               c.hudControl.leadvRel, c.hudControl.leadyRel, self.dragonconf)
+                               c.hudControl.leadvRel, c.hudControl.leadyRel)
     self.frame += 1
     return can_sends
