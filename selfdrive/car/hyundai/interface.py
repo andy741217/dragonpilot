@@ -51,13 +51,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
 
 
-    if opParams().get('Enable_INDI'):
-      
-      ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.outerLoopGain = 3.  # stock is 2.0.  Trying out 2.5
-      ret.lateralTuning.indi.innerLoopGain = 2.
-      ret.lateralTuning.indi.timeConstant = 1.4
-      ret.lateralTuning.indi.actuatorEffectiveness = 2.
+    
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
@@ -137,6 +131,8 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
+      ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
