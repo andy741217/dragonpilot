@@ -52,14 +52,14 @@ class CarInterface(CarInterfaceBase):
 
 
     if opParams().get('Enable_INDI'):
-      ret.lateralTuning.indi.innerLoopGainBP = [0]
-      ret.lateralTuning.indi.innerLoopGainV = [4.0]
-      ret.lateralTuning.indi.outerLoopGainBP = [0]
-      ret.lateralTuning.indi.outerLoopGainV = [3.0]
-      ret.lateralTuning.indi.timeConstantBP = [0]
-      ret.lateralTuning.indi.timeConstantV = [1.0]
-      ret.lateralTuning.indi.actuatorEffectivenessBP = [0]
-      ret.lateralTuning.indi.actuatorEffectivenessV = [1.0]
+      
+      ret.lateralTuning.indi.innerLoopGainV = 4.0
+      
+      ret.lateralTuning.indi.outerLoopGainV = 3.0
+      
+      ret.lateralTuning.indi.timeConstantV = 1.0
+      
+      ret.lateralTuning.indi.actuatorEffectivenessV = 1.0
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
