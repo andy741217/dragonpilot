@@ -99,14 +99,10 @@ class CarState(CarStateBase):
       self.cancel_button_count = 0
 
     # cruise state
-    if not self.CP.enableCruise:
-      if self.cruise_buttons == 1 or self.cruise_buttons == 2:
-        self.allow_nonscc_available = True
-      ret.cruiseState.available = True
-      ret.cruiseState.enabled = self.allow_nonscc_available != 0
-    elif not self.CP.radarOffCan:
-      ret.cruiseState.available = (cp_scc.vl["SCC11"]["MainMode_ACC"] != 0)
-      ret.cruiseState.enabled = (cp_scc.vl["SCC12"]['ACCMode'] != 0)
+   
+    if not self.CP.radarOffCan:
+      ret.cruiseState.available = cp_scc.vl["SCC11"]["MainMode_ACC"] != 0
+      ret.cruiseState.enabled = cp_scc.vl["SCC12"]['ACCMode'] != 0
 
     self.lead_distance = cp_scc.vl["SCC11"]['ACC_ObjDist']
     self.vrelative = cp_scc.vl["SCC11"]['ACC_ObjRelSpd']
