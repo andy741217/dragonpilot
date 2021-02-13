@@ -100,7 +100,7 @@ class CarState(CarStateBase):
 
     # cruise state
    
-    if not self.CP.radarOffCan:
+    if self.CP.openpilotLongitudinalControl:
       ret.cruiseState.available = cp_scc.vl["SCC11"]["MainMode_ACC"] != 0
       ret.cruiseState.enabled = cp_scc.vl["SCC12"]['ACCMode'] != 0
 
