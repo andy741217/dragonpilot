@@ -132,7 +132,7 @@ class Cluster():
 
   def get_RadarState_from_vision(self, lead_msg, v_ego):
     # TODO: test lead speed adjusted for model certainty
-    v_rel = lead_msg.xyva[2] - lead_msg.xyvaStd[2]
+    v_rel = lead_msg.xyva[2] #- lead_msg.xyvaStd[2]
     # TODO: dont let lead speed go negative (can mpc handle objects backing up at you?)
     v_lead = max(v_ego + v_rel, 0)
     return {
