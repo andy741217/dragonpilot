@@ -270,22 +270,23 @@ class CarInterface(CarInterfaceBase):
 
     if self.CP.sccBus == 2:
       self.CP.enableCruise = self.CC.usestockscc
+    
+    if self.enabled_prev and not self.CC.enabled and not self.CP.enableCruise:
+       ret.cruiseState.enabled = False
+     self.enabled_prev = self.CC.enabled
 
-    #if self.CS.brakeHold and not self.CC.usestockscc:
-    #  events.add(EventName.brakeHold)
+    if self.CS.brakeHold and not self.CC.usestockscc:
+       events.add(EventName.brakeHold)
+    
+   
     if self.CS.parkBrake and not self.CC.usestockscc:
       events.add(EventName.parkBrake)
     if self.CS.brakeUnavailable and not self.CC.usestockscc:
       events.add(EventName.brakeUnavailable)
-    if self.CC.lanechange_manual_timer and ret.vEgo > 0.3:
-      events.add(EventName.laneChangeManual)
-    if self.CC.emergency_manual_timer:
-      events.add(EventName.emgButtonManual)
-    if self.CC.acc_standstill_timer >= 200:
-      #events.add(EventName.standStill)
-      self.CP.standStill = True
-    else:
-      self.CP.standStill = False
+    if self.CS.parkBrake and not self.CC.usestockscc:
+      events.add(EventName.parkBrake)
+    if self.CS.brakeUnavailable and not self.CC.usestockscc:
+      events.add(EventName.brakeUnavailable)
 
     buttonEvents = []
     if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
