@@ -23,7 +23,6 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.longitudinal_planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
 from selfdrive.hardware import HARDWARE, TICI
-from selfdrive.swaglog import cloudlog
 # TODO: move out of debug
 from selfdrive.debug.disable_ecu import disable_ecu
 
@@ -401,6 +400,9 @@ class Controls:
 
     # Gas/Brake PID loop
     actuators.gas, actuators.brake = self.LoC.update(self.active, CS, v_acc_sol, plan.vTargetFuture, a_acc_sol, self.CP)
+    # TODO: overriding to use accel directly from mpc
+    actuators.gas = a_acc_sol if a_acc_sol > 0 else 0.
+    actuators.brake = -a_acc_sol if a_acc_sol < 0 else 0.
     # Steering PID loop and lateral MPC
     actuators.steer, actuators.steerAngle, lac_log = self.LaC.update(self.active, CS, self.CP, path_plan)
 
@@ -431,6 +433,14 @@ class Controls:
     CC = car.CarControl.new_message()
     CC.enabled = self.enabled
     CC.actuators = actuators
+
+    CC.vTargetFuture = float(self.sm['longitudinalPlan'].vTargetFuture)
+
+    lead = self.sm['radarState'].leadOne
+    CC.lead.status = bool(lead.status)
+    CC.lead.dRel = float(lead.dRel)
+    CC.lead.yRel = float(lead.yRel)
+    CC.lead.vRel = float(lead.vRel)
 
     CC.cruiseControl.override = True
     CC.cruiseControl.cancel = not self.CP.enableCruise or (not self.enabled and CS.cruiseState.enabled)

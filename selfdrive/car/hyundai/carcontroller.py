@@ -1,5 +1,5 @@
 from cereal import car
-from common.numpy_fast import interp
+from common.numpy_fast import clip #interp
 from common.realtime import DT_CTRL
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands, create_acc_opt, create_frt_radar_opt
@@ -10,8 +10,8 @@ from opendbc.can.packer import CANPacker
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
 # TODO: adjust?
-HYUNDAI_ACCEL_LOOKUP_BP = [-1., 0., 2./3.5]
-HYUNDAI_ACCEL_LOOKUP_V = [-3.5, 0., 2.]
+#HYUNDAI_ACCEL_LOOKUP_BP = [-1., 0., 2./3.5]
+#HYUNDAI_ACCEL_LOOKUP_V = [-3.5, 0., 2.]
 
 def process_hud_alert(enabled, fingerprint, visual_alert, left_lane,
                       right_lane, left_lane_depart, right_lane_depart):
@@ -49,7 +49,7 @@ class CarController():
 
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart,
-             lead_visible, set_speed):
+             lead_visible, set_speed, lead, vTargetFuture):
     # Steering Torque
     new_steer = actuators.steer * self.p.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
@@ -95,13 +95,18 @@ class CarController():
           self.last_resume_frame = frame
 
     if frame % 2 == 0 and CS.CP.openpilotLongitudinalControl:
-      accel = actuators.gas - actuators.brake
-      stopping = accel < 0 and CS.out.vEgo < 0.05
-      if stopping:
-        accel = -1.0
-      apply_accel = interp(accel, HYUNDAI_ACCEL_LOOKUP_BP, HYUNDAI_ACCEL_LOOKUP_V)
+      # rouding prevents accel_target from alternating between very small positive and negative value
+      accel_target = round(actuators.gas - actuators.brake, 2)
+      accel_error = round(accel_target - CS.out.aEgo, 2)
+      accel_adj = accel_error * (1 if accel_target < 0. else 0.)
+      accel_out = accel_target + (accel_adj if abs(accel_error) >= 0.1 else 0)
+      accel_out = clip(accel_out, -3.5, 2.0)
+      stopping = vTargetFuture < 0.05 and CS.out.vEgo < 0.1
+      # TODO: temporary for debugging
+      if accel_target != accel_out and enabled:
+        print(accel_target, accel_out)
       set_speed_in_units = set_speed * (CV.MS_TO_MPH if CS.clu11["CF_Clu_SPEED_UNIT"] == 1 else CV.MS_TO_KPH)
-      can_sends.extend(create_acc_commands(self.packer, enabled, apply_accel, int(frame / 2), lead_visible, set_speed_in_units, stopping))
+      can_sends.extend(create_acc_commands(self.packer, enabled, accel_out, accel_out, int(frame / 2), lead, set_speed_in_units, stopping))
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0 and self.car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.IONIQ, CAR.KIA_NIRO_EV, CAR.IONIQ_EV_2020]:
