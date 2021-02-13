@@ -273,21 +273,18 @@ class CarInterface(CarInterfaceBase):
       self.CP.enableCruise = self.CC.usestockscc
     
     if self.enabled_prev and not self.CC.enabled and not self.CP.enableCruise:
-       ret.cruiseState.enabled = False
-     self.enabled_prev = self.CC.enabled
+      ret.cruiseState.enabled = False
+    self.enabled_prev = self.CC.enabled
 
     if self.CS.brakeHold and not self.CC.usestockscc:
-       events.add(EventName.brakeHold)
-    
-   
+      events.add(EventName.brakeHold)
     if self.CS.parkBrake and not self.CC.usestockscc:
       events.add(EventName.parkBrake)
     if self.CS.brakeUnavailable and not self.CC.usestockscc:
       events.add(EventName.brakeUnavailable)
-    if self.CS.parkBrake and not self.CC.usestockscc:
-      events.add(EventName.parkBrake)
-    if self.CS.brakeUnavailable and not self.CC.usestockscc:
-      events.add(EventName.brakeUnavailable)
+    if not self.visiononlyWarning and self.CP.radarDisablePossible and self.CC.enabled and not self.low_speed_alert:
+      events.add(EventName.visiononlyWarning)
+      self.visiononlyWarning = True
 
     buttonEvents = []
     if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
