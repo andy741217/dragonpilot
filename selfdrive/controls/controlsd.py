@@ -498,7 +498,10 @@ class Controls:
     CC.hudControl.speedVisible = self.enabled
     CC.hudControl.lanesVisible = self.enabled
     CC.hudControl.leadVisible = self.sm['plan'].hasLead
-
+    CC.hudControl.leadDistance = 0 #self.sm['radarState'].leadOne.dRel
+    CC.hudControl.leadvRel = 0 #self.sm['radarState'].leadOne.vRel
+    CC.hudControl.leadyRel = 0 #self.sm['radarState'].leadOne.yRel
+    
     right_lane_visible = self.sm['pathPlan'].rProb > 0.5
     left_lane_visible = self.sm['pathPlan'].lProb > 0.5
     CC.hudControl.rightLaneVisible = bool(right_lane_visible)
