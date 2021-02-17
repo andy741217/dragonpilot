@@ -1,5 +1,6 @@
 from selfdrive.car.toyota.values import CAR as CAR_TOYOTA
 from selfdrive.car.honda.values import CAR as CAR_HONDA
+from selfdrive.car.hyundai.values import CAR as CAR_HYUNDAI
 from common.numpy_fast import clip, interp
 import numpy as np
 
@@ -8,6 +9,7 @@ class DynamicGas:
   def __init__(self, CP, candidate):
     self.toyota_candidates = [attr for attr in dir(CAR_TOYOTA) if not attr.startswith("__")]
     self.honda_candidates = [attr for attr in dir(CAR_HONDA) if not attr.startswith("__")]
+    self.hyundai_candidates = [attr for attr in dir(CAR_HYUNDAI) if not attr.startswith("__")]
 
     self.candidate = candidate
     self.CP = CP
@@ -40,9 +42,9 @@ class DynamicGas:
         y = [1.0, 0.8, 0.0]
         gas_mod *= interp(self.lead_data['x_lead'], x, y)
 
-        if not self.CP.enableGasInterceptor:  # this will hopefuly let TSS2 use dynamic gas, need to tune
-          gas_mod *= 0.33
-        new_gas = gas + gas_mod
+        #if not self.CP.enableGasInterceptor:  # this will hopefuly let TSS2 use dynamic gas, need to tune
+        #  gas_mod *= 0.33
+        #new_gas = gas + gas_mod
 
         x = [1.78816, 6.0, 8.9408]  # slowly ramp mods down as we approach 20 mph
         y = [new_gas, (new_gas * 0.6 + gas * 0.4), gas]
@@ -67,34 +69,36 @@ class DynamicGas:
     return float(clip(gas, 0.0, 1.0))
 
   def set_profile(self):
-    x = [0.0, 1.4082, 2.80311, 4.22661, 5.38271, 6.16561, 7.24781, 8.28308, 10.24465, 12.96402, 15.42303, 18.11903, 20.11703, 24.46614, 29.05805, 32.71015, 35.76326]
-    y = [0.234, 0.237, 0.246, 0.26, 0.279, 0.297, 0.332, 0.354, 0.368, 0.377, 0.389, 0.399, 0.411, 0.45, 0.504, 0.558, 0.617]
-    self.supported_car = False
-    if self.CP.enableGasInterceptor:
-      if self.candidate == CAR_TOYOTA.COROLLA:
-        x = [0.0, 1.4082, 2.8031, 4.2266, 5.3827, 6.1656, 7.2478, 8.2831, 10.2447, 12.964, 15.423, 18.119, 20.117, 24.4661, 29.0581, 32.7101, 35.7633]
-        y = [0.219, 0.225, 0.237, 0.255, 0.279, 0.3, 0.339, 0.361, 0.376, 0.385, 0.394, 0.408, 0.421, 0.459, 0.513, 0.569, 0.629]
-        self.supported_car = True
-      elif self.candidate == CAR_TOYOTA.PRIUS:
-        x = [0.0, 1.4082, 2.8031, 4.2266, 5.3827, 6.1656, 7.2478, 8.2831, 10.2447, 12.964, 15.423, 18.119, 20.117, 24.4661, 29.0581, 32.7101, 35.7633]
-        y = [0.3, 0.304, 0.315, 0.342, 0.365, 0.386, 0.429, 0.454, 0.472, 0.48, 0.489, 0.421, 0.432, 0.480, 0.55, 0.621, 0.7]
-        self.supported_car = True
-      elif self.candidate == CAR_TOYOTA.RAV4:
-        y = np.array(y) * 1.1
-        self.supported_car = True
-      elif self.candidate in [CAR_HONDA.PILOT_2019, CAR_HONDA.CIVIC]:
-        self.supported_car = True
-      else:  # all other pedal cars are supported
-        # x, y = self.CP.gasMaxBP, self.CP.gasMaxV  # probably better to use custom maxGas above
-        self.supported_car = True
-    else:
-      self.supported_car = True
-      if self.candidate in [CAR_TOYOTA.PRIUS_TSS2, CAR_TOYOTA.PRIUS_2020]:
-        y = [0.35587, 0.46747, 0.41816, 0.33261, 0.27844, 0.2718, 0.28184, 0.29106, 0.29785, 0.297, 0.29658, 0.30308, 0.31354, 0.34922, 0.39767, 0.44527, 0.4984]
-      elif self.candidate in [CAR_TOYOTA.RAV4_TSS2, CAR_TOYOTA.RAV4H_TSS2]:
-        y = [0.35587, 0.46747, 0.41816, 0.33261, 0.27844, 0.2718, 0.28396, 0.29537, 0.30647, 0.31161, 0.3168, 0.3272, 0.34, 0.3824, 0.44, 0.4968, 0.56]
-      else:
-        self.supported_car = False
+    #x = [0.0, 1.4082, 2.80311, 4.22661, 5.38271, 6.16561, 7.24781, 8.28308, 10.24465, 12.96402, 15.42303, 18.11903, 20.11703, 24.46614, 29.05805, 32.71015, 35.76326]
+    #y = [0.234, 0.237, 0.246, 0.26, 0.279, 0.297, 0.332, 0.354, 0.368, 0.377, 0.389, 0.399, 0.411, 0.45, 0.504, 0.558, 0.617]
+    x = [0.0, 1.4082, 2.8031, 4.2266, 5.3827, 6.1656, 7.2478, 8.2831, 10.2447, 12.964, 15.423, 18.119, 20.117, 24.4661, 29.0581, 32.7101, 35.7633]
+    y = [0.45587, 0.56747, 0.51816, 0.43261, 0.37844, 0.3718, 0.38396, 0.39537, 0.40647, 0.41161, 0.4168, 0.4272, 0.44, 0.4824, 0.54, 0.5968, 0.66]
+    self.supported_car = True
+#    if self.CP.enableGasInterceptor:
+#      if self.candidate == CAR_TOYOTA.COROLLA:
+#        x = [0.0, 1.4082, 2.8031, 4.2266, 5.3827, 6.1656, 7.2478, 8.2831, 10.2447, 12.964, 15.423, 18.119, 20.117, 24.4661, 29.0581, 32.7101, 35.7633]
+#        y = [0.219, 0.225, 0.237, 0.255, 0.279, 0.3, 0.339, 0.361, 0.376, 0.385, 0.394, 0.408, 0.421, 0.459, 0.513, 0.569, 0.629]
+#        self.supported_car = True
+#      elif self.candidate == CAR_TOYOTA.PRIUS:
+#        x = [0.0, 1.4082, 2.8031, 4.2266, 5.3827, 6.1656, 7.2478, 8.2831, 10.2447, 12.964, 15.423, 18.119, 20.117, 24.4661, 29.0581, 32.7101, 35.7633]
+#        y = [0.3, 0.304, 0.315, 0.342, 0.365, 0.386, 0.429, 0.454, 0.472, 0.48, 0.489, 0.421, 0.432, 0.480, 0.55, 0.621, 0.7]
+#        self.supported_car = True
+#      elif self.candidate == CAR_TOYOTA.RAV4:
+#        y = np.array(y) * 1.1
+#        self.supported_car = True
+#      elif self.candidate in [CAR_HONDA.PILOT_2019, CAR_HONDA.CIVIC]:
+#        self.supported_car = True
+#      else:  # all other pedal cars are supported
+#        # x, y = self.CP.gasMaxBP, self.CP.gasMaxV  # probably better to use custom maxGas above
+#        self.supported_car = True
+#    else:
+#      self.supported_car = True
+#      if self.candidate in [CAR_TOYOTA.PRIUS_TSS2, CAR_TOYOTA.PRIUS_2020]:
+#        y = [0.35587, 0.46747, 0.41816, 0.33261, 0.27844, 0.2718, 0.28184, 0.29106, 0.29785, 0.297, 0.29658, 0.30308, 0.31354, 0.34922, 0.39767, 0.44527, 0.4984]
+#      elif self.candidate in [CAR_TOYOTA.RAV4_TSS2, CAR_TOYOTA.RAV4H_TSS2]:
+#        y = [0.35587, 0.46747, 0.41816, 0.33261, 0.27844, 0.2718, 0.28396, 0.29537, 0.30647, 0.31161, 0.3168, 0.3272, 0.34, 0.3824, 0.44, 0.4968, 0.56]
+#      else:
+#        self.supported_car = False
 
     self.gasMaxBP, self.gasMaxV = x, y
 
