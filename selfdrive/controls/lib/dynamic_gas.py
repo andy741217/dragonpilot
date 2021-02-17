@@ -44,7 +44,7 @@ class DynamicGas:
 
         #if not self.CP.enableGasInterceptor:  # this will hopefuly let TSS2 use dynamic gas, need to tune
         #  gas_mod *= 0.33
-        #new_gas = gas + gas_mod
+        new_gas = gas + gas_mod
 
         x = [1.78816, 6.0, 8.9408]  # slowly ramp mods down as we approach 20 mph
         y = [new_gas, (new_gas * 0.6 + gas * 0.4), gas]
