@@ -476,8 +476,8 @@ def manager_thread():
   params = Params()
 
   # save boot log
-  if params.get("dp_logger") == b'0':
-    subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+  #if params.get("dp_logger") == b'0':
+  #  subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
 
   if params.get("dp_athenad") == b'0':
     # start daemon processes
