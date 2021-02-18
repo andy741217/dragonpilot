@@ -101,6 +101,7 @@ class opParams:
                         'rav4TSS2_use_indi': Param(False, bool, 'Enable this to use INDI for lat with your TSS2 RAV4'),
                         'smartMDPS': Param(True, bool, 'Toggle to enable smart MDPS'),
                         'Enable_INDI': Param(False, bool, 'Toggle to enable INDI'),
+                        'enableLKASbutton': Param(True, bool, 'Toggle to enable enableLKASbutton'),
                         'standstill_hack': Param(False, bool, 'Some cars support stop and go, you just need to enable this')}
 
     self._params_file = '/data/op_params.json'
