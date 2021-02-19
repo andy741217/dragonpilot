@@ -17,7 +17,7 @@ class CarState(CarStateBase):
     self.cruise_buttons = 0
     self.allow_nonscc_available = False
     self.lkasstate = 0
-    self.acc_active = False
+    
     self.lead_distance = 150.
     self.radar_obj_valid = 0.
     self.vrelative = 0.
