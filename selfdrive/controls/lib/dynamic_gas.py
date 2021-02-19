@@ -35,11 +35,11 @@ class DynamicGas:
         gas_mod = -(gas * interp(self.lead_data['v_rel'], x, y))
 
         x = [0.44704, 1.1176, 1.34112]  # lead accel mod
-        y = [2.0, 1.65, 1.25]  # maximum we can reduce gas_mod is 40 percent (never increases mod)
+        y = [1.0, 0.75, 0.625  # maximum we can reduce gas_mod is 40 percent (never increases mod)
         gas_mod *= interp(self.lead_data['a_lead'], x, y)
 
         x = [6.1, 9.15, 15.24]  # as lead gets further from car, lessen gas mod/reduction
-        y = [2.0, 1.8, 1.0]
+        y = [1.0, 0.8, 0.0]
         gas_mod *= interp(self.lead_data['x_lead'], x, y)
 
         #if not self.CP.enableGasInterceptor:  # this will hopefuly let TSS2 use dynamic gas, need to tune
