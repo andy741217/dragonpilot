@@ -172,10 +172,14 @@ def create_scc14(packer, enabled, usestockscc, aebcmdact, accel, scc14, objgap, 
           values["ComfortBandUpper"] = 2.
           values["ComfortBandLower"] = 0.
       else:
-        values["JerkUpperLimit"] = 50.
-        values["JerkLowerLimit"] = 50.
-        values["ComfortBandUpper"] = 50.
-        values["ComfortBandLower"] = 50.
+        #values["JerkUpperLimit"] = 50.
+        #values["JerkLowerLimit"] = 50.
+        #values["ComfortBandUpper"] = 50.
+        #values["ComfortBandLower"] = 50.
+        values["JerkUpperLimit"] = 3.2
+        values["JerkLowerLimit"] = 0.1
+        values["ComfortBandUpper"] = 0.24
+        values["ComfortBandLower"] = 0.24
 
   return packer.make_can_msg("SCC14", 0, values)
 
@@ -203,15 +207,14 @@ def create_fca12(packer):
 
 def create_mdps12(packer, frame, mdps12):
   values = mdps12
-  if opParams().get('enableLKASbutton'):
-    values["CF_Mdps_ToiActive"] = 0
-    values["CF_Mdps_ToiUnavail"] = 1
-    values["CF_Mdps_MsgCount2"] = frame % 0x100
-    values["CF_Mdps_Chksum2"] = 0
+  values["CF_Mdps_ToiActive"] = 0
+  values["CF_Mdps_ToiUnavail"] = 1
+  values["CF_Mdps_MsgCount2"] = frame % 0x100
+  values["CF_Mdps_Chksum2"] = 0
 
-    dat = packer.make_can_msg("MDPS12", 2, values)[2]
-    checksum = sum(dat) % 256
-    values["CF_Mdps_Chksum2"] = checksum
+  dat = packer.make_can_msg("MDPS12", 2, values)[2]
+  checksum = sum(dat) % 256
+  values["CF_Mdps_Chksum2"] = checksum
 
   return packer.make_can_msg("MDPS12", 2, values)
 

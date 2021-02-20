@@ -188,6 +188,7 @@ class CarInterface(CarInterfaceBase):
       ret.sccBus = -1
 
     ret.radarOffCan = (ret.sccBus == -1)
+    
 
     ret.openpilotLongitudinalControl = True and not (ret.sccBus == 0)
 
@@ -237,6 +238,7 @@ class CarInterface(CarInterfaceBase):
       if ret.fcaBus == 0:
         ret.fcaBus = -1
 
+    ret.standStill = False
     return ret
 
   def update(self, c, can_strings):
@@ -246,43 +248,34 @@ class CarInterface(CarInterfaceBase):
     
     ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
     ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
+    events = self.create_common_events(ret)
 
     # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
-    events = self.create_common_events(ret)
-
-
-    # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
-    if ret.vEgo < (self.CP.minSteerSpeed + .56) and self.CP.minSteerSpeed > 10. and self.CC.enabled:
-      if not self.low_speed_alert and self.belowspeeddingtimer < 100:
-        events.add(car.CarEvent.EventName.belowSteerSpeedDing)
-        self.belowspeeddingtimer +=1
-      else:
-        self.belowspeeddingtimer = 0.
-        self.low_speed_alert = True
+    # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)    
     if ret.vEgo > (self.CP.minSteerSpeed + .84) or not self.CC.enabled:
       self.low_speed_alert = False
       self.belowspeeddingtimer = 0.
-    if self.low_speed_alert:
-      events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     if self.CP.sccBus == 2:
       self.CP.enableCruise = self.CC.usestockscc
 
-    if self.enabled_prev and not self.CC.enabled and not self.CP.enableCruise:
-      ret.cruiseState.enabled = False
-    self.enabled_prev = self.CC.enabled
-
-    if self.CS.brakeHold and not self.CC.usestockscc:
-      events.add(EventName.brakeHold)
+    #if self.CS.brakeHold and not self.CC.usestockscc:
+    #  events.add(EventName.brakeHold)
     if self.CS.parkBrake and not self.CC.usestockscc:
       events.add(EventName.parkBrake)
     if self.CS.brakeUnavailable and not self.CC.usestockscc:
       events.add(EventName.brakeUnavailable)
-    if not self.visiononlyWarning and self.CP.radarDisablePossible and self.CC.enabled and not self.low_speed_alert:
-      events.add(EventName.visiononlyWarning)
-      self.visiononlyWarning = True
+    #if self.CC.lanechange_manual_timer and ret.vEgo > 0.3:
+    #  events.add(EventName.laneChangeManual)
+    #if self.CC.emergency_manual_timer:
+    #  events.add(EventName.emgButtonManual)
+    if self.CC.acc_standstill_timer >= 200:
+      #events.add(EventName.standStill)
+      self.CP.standStill = True
+    else:
+      self.CP.standStill = False
 
     buttonEvents = []
     if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
@@ -325,13 +318,11 @@ class CarInterface(CarInterfaceBase):
         if b.type == ButtonType.cancel and b.pressed:
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
-        if b.type == ButtonType.altButton3 and b.pressed:
-          events.add(EventName.buttonCancel)
-          events.add(EventName.pcmDisable)
+        #if b.type == ButtonType.altButton3 and b.pressed:
+          #events.add(EventName.buttonCancel)
+          #events.add(EventName.pcmDisable)
 
-    
     ret.events = events.to_msg() 
-
     self.CS.out = ret.as_reader()
     return self.CS.out
     
