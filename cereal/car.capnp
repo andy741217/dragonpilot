@@ -118,6 +118,15 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     focusRecoverActiveDEPRECATED @86;
     neosUpdateRequiredDEPRECATED @88;
     modelLagWarningDEPRECATED @93;
+    laneChangeManual @94;
+    emgButtonManual @95;
+    driverSteering @96;
+    modeChangeOpenpilot @97;
+    modeChangeDistcurv @98;
+    modeChangeDistance @99;
+    modeChangeOneway @100;
+    needBrake @101;
+    standStill @102;
   }
 }
 
@@ -185,15 +194,18 @@ struct CarState {
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
   
-  radarDistance @37 :Float32;
-  brakeHold @38 :Bool;    # AutoHold
-  cruiseGapSet @39 :UInt8;
-  standStill @40 :Bool;
-  limitSpeedmanual @41 :Bool;
-  cruiseMainButton @42 :UInt8;
-  cruiseButtons @43 :Float32;
-  cruiseStatus @44 :Bool;
-  
+  # tpms 
+  tpmsPressureFl @37 :Float32;
+  tpmsPressureFr @38 :Float32;
+  tpmsPressureRl @39 :Float32;
+  tpmsPressureRr @40 :Float32;
+
+  radarDistance @41 :Float32;
+  brakeHold @42 :Bool;    # AutoHold
+  cruiseGapSet @43 :UInt8;
+  standStill @44 :Bool;
+  limitSpeedmanual @45 :Bool;
+ 
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
@@ -439,7 +451,8 @@ struct CarParams {
   emsAvailable @64: Bool;
   clustergearAvailable @65: Bool;
   tcugearAvailable @66: Bool;
-  
+  standStill @67: Bool;
+ 
   struct LateralParams {
     torqueBP @0 :List(Int32);
     torqueV @1 :List(Int32);
