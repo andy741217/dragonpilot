@@ -3,7 +3,7 @@ from numpy import clip
 from cereal import car, messaging
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.carstate import GearShifter
-from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mf, \
+from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, \
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
                                              create_scc42a, create_scc7d0, create_fca11, create_fca12, create_mdps12
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURES
