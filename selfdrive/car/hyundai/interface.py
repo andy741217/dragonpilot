@@ -34,9 +34,9 @@ class CarInterface(CarInterfaceBase):
     ret.communityFeature = ret.enableGasInterceptor or candidate not in [CAR.SONATA, CAR.PALISADE]
 
     ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
-    ret.steerRateCost = 0.5
+    ret.steerRateCost = 0.35
     ret.steerLimitTimer = 0.1
-    tire_stiffness_factor = 0.685
+    tire_stiffness_factor = 0.385
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
     ret.longitudinalTuning.kpBP = [0., .3, 10., 35.]
@@ -50,7 +50,12 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxBP = [0., 5., 5.1]
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
     
-       
+    ret.lateralTuning.pid.kpBP = [0., 10., 30.]
+    ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
+    ret.lateralTuning.pid.kiBP = [0., 10., 30.]
+    ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
+    ret.lateralTuning.pid.kfBP = [0., 10., 30.]
+    ret.lateralTuning.pid.kfV = [0.000015, 0.00002, 0.000025]
 
     if opParams().get('Enable_INDI'):
       ret.lateralTuning.init('indi')
@@ -136,7 +141,7 @@ class CarInterface(CarInterfaceBase):
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 12.5
+      ret.steerRatio = 10.5
      
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
