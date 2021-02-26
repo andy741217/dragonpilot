@@ -115,6 +115,10 @@ class CarController():
     apply_accel, self.accel_steady = accel_hysteresis(apply_accel, self.accel_steady)
     apply_accel = clip(apply_accel * ACCEL_SCALE, ACCEL_MIN, ACCEL_MAX)
     
+    # slow on curve
+    if CS.out.vEgo < 55 * CV.KPH_TO_MS and (abs(CS.out.steeringAngle) > 15.):
+      apply_accel = apply_accel * 0.5
+    
     # Steering Torque
     new_steer = actuators.steer * self.p.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
