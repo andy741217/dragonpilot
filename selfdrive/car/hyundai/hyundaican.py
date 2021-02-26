@@ -82,8 +82,8 @@ def create_acc_commands(packer, enabled, accel_target, accel_apply, idx, lead, s
 
   scc11_values = {
     "MainMode_ACC": 1,
-    "TauGapSet": 4,
-    "VSetDis": set_speed if enabled else 0,
+    "TauGapSet": 3,
+    "VSetDis": set_speed,
     "ObjValid": lead.status,
     "ACC_ObjStatus": lead.status,
     "ACC_ObjDist": clip(lead.dRel if lead.status else 204.6, 0., 204.6),
@@ -94,9 +94,9 @@ def create_acc_commands(packer, enabled, accel_target, accel_apply, idx, lead, s
   commands.append(packer.make_can_msg("SCC11", 0, scc11_values))
 
   scc12_values = {
-    "ACCMode": 1 if enabled else 0,
+    "ACCMode": 2 if enabled else 0,
     "StopReq": 1 if stopping else 0,
-    "aReqRaw": accel_target if enabled else 0,
+    "aReqRaw": accel_apply if enabled else 0,
     "aReqValue": accel_apply if enabled else 0, # stock ramps up at 1.0/s and down at 0.5/s until it reaches aReqRaw
     "CR_VSM_Alive": idx % 0xF,
   }
@@ -110,7 +110,7 @@ def create_acc_commands(packer, enabled, accel_target, accel_apply, idx, lead, s
     "ComfortBandLower": 0.0, # stock usually is 0 but sometimes uses higher values
     "JerkUpperLimit": 12.7 if enabled else 0, # stock usually is 1.0 but sometimes uses higher values
     "JerkLowerLimit": 12.7 if enabled else 0, # stock usually is 0.5 but sometimes uses higher values
-    "ACCMode": 1 if enabled else 4, # stock will always be 4 instead of 0 after first disengage
+    "ACCMode": 2 if enabled else 4, # stock will always be 4 instead of 0 after first disengage
     "ObjGap": int(min(lead.dRel+2, 10)/2) if lead.status else 0, # 1-5 based on distance to lead vehicle
   }
   commands.append(packer.make_can_msg("SCC14", 0, scc14_values))
@@ -132,7 +132,7 @@ def create_acc_opt(packer):
   commands = []
 
   scc13_values = {
-    "SCCDrvModeRValue": 2,
+    "SCCDrvModeRValue": 3,
     "SCC_Equip": 1,
     "Lead_Veh_Dep_Alert_USM": 2,
   }
