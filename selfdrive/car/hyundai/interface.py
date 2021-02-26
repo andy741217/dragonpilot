@@ -139,6 +139,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
+      ret.lateralTuning.pid.kf = 0.00004
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 10.5
