@@ -34,7 +34,7 @@ class CarInterface(CarInterfaceBase):
     ret.communityFeature = ret.enableGasInterceptor or candidate not in [CAR.SONATA, CAR.PALISADE]
 
     ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
-    ret.steerRateCost = 0.245
+    ret.steerRateCost = 0.15
     ret.steerLimitTimer = 0.1
     tire_stiffness_factor = 0.385
 
@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
     
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
+    ret.lateralTuning.pid.kpV = [0.5, 0.12, 0.16]
     ret.lateralTuning.pid.kiBP = [0., 10., 30.]
     ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
@@ -142,7 +142,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00001
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 12.5
+      ret.steerRatio = 10.5
      
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
