@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
     
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kpV = [0.5, 0.12, 0.16]
+    ret.lateralTuning.pid.kpV = [0.05, 0.12, 0.16]
     ret.lateralTuning.pid.kiBP = [0., 10., 30.]
     ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
