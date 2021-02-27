@@ -61,7 +61,7 @@ class CarInterface(CarInterfaceBase):
     if opParams().get('Enable_INDI'):
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGainBP = [10, 20, 30]
-      ret.lateralTuning.indi.innerLoopGainV = [3, 3, 3]
+      ret.lateralTuning.indi.innerLoopGainV = [2.7, 2.7, 2.7]
       ret.lateralTuning.indi.outerLoopGainBP = [10, 20, 30]
       ret.lateralTuning.indi.outerLoopGainV = [2, 2, 2]
       ret.lateralTuning.indi.timeConstantBP = [10, 20, 30]
