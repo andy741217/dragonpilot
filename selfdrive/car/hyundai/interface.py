@@ -50,6 +50,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxBP = [0., 5., 5.1]
     ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
     
+    ret.lateralTuning.pid.kf = 0.00001
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
     ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
     ret.lateralTuning.pid.kiBP = [0., 10., 30.]
@@ -139,7 +140,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
-      ret.lateralTuning.pid.kf = 0.00001
+     
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 10.5
