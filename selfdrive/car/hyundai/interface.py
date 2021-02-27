@@ -46,9 +46,9 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.deadzoneBP = [0., .5]
     ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [0.5]
+    ret.gasMaxV = [1.0]
     ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [1.0]  # safety limits to stop unintended deceleration
+    ret.brakeMaxV = [2.0]  # safety limits to stop unintended deceleration
     
     ret.lateralTuning.pid.kf = 0.00001
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
