@@ -277,9 +277,9 @@ class Controls:
         self.events.add(EventName.processNotRunning)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
-    if CS.brakePressed and self.sm['longitudinalPlan'].vTargetFuture >= STARTING_TARGET_SPEED \
-      and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
-      self.events.add(EventName.noTarget)
+    #if CS.brakePressed and self.sm['longitudinalPlan'].vTargetFuture >= STARTING_TARGET_SPEED \
+    #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
+    #  self.events.add(EventName.noTarget)
 
     self.add_stock_additions_alerts(CS)
 
@@ -508,6 +508,9 @@ class Controls:
     CC.hudControl.speedVisible = self.enabled
     CC.hudControl.lanesVisible = self.enabled
     CC.hudControl.leadVisible = self.sm['longitudinalPlan'].hasLead
+    CC.hudControl.leadDistance = 0 #self.sm['radarState'].leadOne.dRel
+    CC.hudControl.leadvRel = 0 #self.sm['radarState'].leadOne.vRel
+    CC.hudControl.leadyRel = 0 #self.sm['radarState'].leadOne.yRel
 
     right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
     left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
