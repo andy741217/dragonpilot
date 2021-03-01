@@ -11,6 +11,8 @@ $Java.outerClassname("Car");
 
 struct CarEvent @0x9b1657f34caf3ad3 {
   name @0 :EventName;
+
+  # event types
   enable @1 :Bool;
   noEntry @2 :Bool;
   warning @3 :Bool;   # alerts presented only when  enabled or soft disabling
@@ -21,7 +23,6 @@ struct CarEvent @0x9b1657f34caf3ad3 {
   permanent @8 :Bool; # alerts presented regardless of openpilot state
 
   enum EventName @0xbaa8c5d505f727de {
-    # TODO: copy from error list
     canError @0;
     steerUnavailable @1;
     brakeUnavailable @2;
@@ -73,6 +74,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     preLaneChangeLeft @57;
     preLaneChangeRight @58;
     laneChange @59;
+    invalidGiraffeToyotaDEPRECATED @60;
     internetConnectivityNeededDEPRECATED @61;
     communityFeatureDisallowed @62;
     lowMemory @63;
@@ -100,9 +102,12 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     deviceFalling @90;
     fanMalfunction @91;
     cameraMalfunction @92;
-
+    gpsMalfunction @94;
     startupOneplus @82;
+    processNotRunning @95;
 
+    
+    
     gasUnavailableDEPRECATED @3;
     dataNeededDEPRECATED @16;
     modelCommIssueDEPRECATED @27;
@@ -112,21 +117,21 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     driverMonitorOffDEPRECATED @42;
     calibrationProgressDEPRECATED @47;
     invalidGiraffeHondaDEPRECATED @49;
-    invalidGiraffeToyotaDEPRECATED @60;
+    
     whitePandaUnsupportedDEPRECATED @81;
     commIssueWarningDEPRECATED @83;
     focusRecoverActiveDEPRECATED @86;
     neosUpdateRequiredDEPRECATED @88;
     modelLagWarningDEPRECATED @93;
-    laneChangeManual @94;
-    emgButtonManual @95;
-    driverSteering @96;
-    modeChangeOpenpilot @97;
-    modeChangeDistcurv @98;
-    modeChangeDistance @99;
-    modeChangeOneway @100;
-    needBrake @101;
-    standStill @102;
+    laneChangeManual @96;
+    emgButtonManual @97;
+    driverSteering @98;
+    modeChangeOpenpilot @99;
+    modeChangeDistcurv @100;
+    modeChangeDistance @101;
+    modeChangeOneway @102;
+    needBrake @103;
+    standStill @104;
   }
 }
 
@@ -134,7 +139,6 @@ struct CarEvent @0x9b1657f34caf3ad3 {
 # all speeds in m/s
 
 struct CarState {
-  errorsDEPRECATED @0 :List(CarEvent.EventName);
   events @13 :List(CarEvent);
 
   # car speed
@@ -193,7 +197,7 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
-  
+
   # tpms 
   tpmsPressureFl @37 :Float32;
   tpmsPressureFr @38 :Float32;
@@ -205,7 +209,6 @@ struct CarState {
   cruiseGapSet @43 :UInt8;
   standStill @44 :Bool;
   limitSpeedmanual @45 :Bool;
- 
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
@@ -256,6 +259,8 @@ struct CarState {
       gapAdjustCruise @11;
     }
   }
+
+  errorsDEPRECATED @0 :List(CarEvent.EventName);
 }
 
 # ******* radar state @ 20hz *******
@@ -299,10 +304,6 @@ struct CarControl {
   enabled @0 :Bool;
   active @7 :Bool;
 
-  gasDEPRECATED @1 :Float32;
-  brakeDEPRECATED @2 :Float32;
-  steeringTorqueDEPRECATED @3 :Float32;
-
   actuators @6 :Actuators;
 
   cruiseControl @4 :CruiseControl;
@@ -338,7 +339,6 @@ struct CarControl {
     leadDistance @10:Float32;
     leadvRel @11:Float32;
     leadyRel @12:Float32;
-    
     enum VisualAlert {
       # these are the choices from the Honda
       # map as good as you can for your car
@@ -353,8 +353,6 @@ struct CarControl {
     }
 
     enum AudibleAlert {
-      # these are the choices from the Honda
-      # map as good as you can for your car
       none @0;
       chimeEngage @1;
       chimeDisengage @2;
@@ -366,6 +364,10 @@ struct CarControl {
       chimeWarning2Repeat @8;
     }
   }
+
+  gasDEPRECATED @1 :Float32;
+  brakeDEPRECATED @2 :Float32;
+  steeringTorqueDEPRECATED @3 :Float32;
 }
 
 # ****** car param ******
@@ -382,6 +384,7 @@ struct CarParams {
 
   minEnableSpeed @7 :Float32;
   minSteerSpeed @8 :Float32;
+  maxSteeringAngleDeg @54 :Float32;
   safetyModel @9 :SafetyModel;
   safetyModelPassive @42 :SafetyModel = silent;
   safetyParam @10 :Int16;
@@ -426,12 +429,10 @@ struct CarParams {
   minSpeedCan @51 :Float32; # Minimum vehicle speed from CAN (below this value drops to 0)
   stoppingBrakeRate @52 :Float32; # brake_travel/s while trying to stop
   startingBrakeRate @53 :Float32; # brake_travel/s while releasing on restart
-  maxSteeringAngleDeg @54 :Float32;
-  hasZss @68: Bool;  # true if ZSS is detected
+
   steerActuatorDelay @36 :Float32; # Steering wheel actuator delay in seconds
   openpilotLongitudinalControl @37 :Bool; # is openpilot doing the longitudinal control?
   carVin @38 :Text; # VIN number queried during fingerprinting
-  isPandaBlack @39: Bool;
   dashcamOnly @41: Bool;
   transmissionType @43 :TransmissionType;
   carFw @44 :List(CarFw);
@@ -439,20 +440,20 @@ struct CarParams {
   communityFeature @46: Bool;  # true if a community maintained feature is detected
   fingerprintSource @49: FingerprintSource;
   networkLocation @50 :NetworkLocation;  # Where Panda/C2 is integrated into the car's CAN network
-  mdpsHarness @55: Bool;
-  sasBus @56: Int8;
-  fcaBus @57: Int8;
-  bsmAvailable @58: Bool;
-  lfaAvailable @59: Bool;
-  sccBus @60: Int8;
-  radarDisablePossible @61: Bool;
-  lvrAvailable @62: Bool;
-  evgearAvailable @63: Bool;
-  emsAvailable @64: Bool;
-  clustergearAvailable @65: Bool;
-  tcugearAvailable @66: Bool;
-  standStill @67: Bool;
- 
+  hasZss @55: Bool;  # true if ZSS is detected
+  mdpsHarness @56: Bool;
+  sasBus @57: Int8;
+  fcaBus @58: Int8;
+  bsmAvailable @59: Bool;
+  lfaAvailable @60: Bool;
+  sccBus @61: Int8;
+  radarDisablePossible @62: Bool;
+  lvrAvailable @63: Bool;
+  evgearAvailable @64: Bool;
+  emsAvailable @65: Bool;
+  clustergearAvailable @66: Bool;
+  tcugearAvailable @67: Bool;
+  standStill @68: Bool;
   struct LateralParams {
     torqueBP @0 :List(Int32);
     torqueV @1 :List(Int32);
@@ -481,18 +482,19 @@ struct CarParams {
   }
 
   struct LateralINDITuning {
-    outerLoopGainBP @0 :List(Float32) = [0.];
-    outerLoopGainV @1 :List(Float32);
-    innerLoopGainBP @2 :List(Float32) = [0.];
-    innerLoopGainV @3 :List(Float32);
-    timeConstantBP @4 :List(Float32) = [0.];
-    timeConstantV @5:List(Float32);
-    actuatorEffectivenessBP @6 :List(Float32) = [0.];
-    actuatorEffectivenessV @7 :List(Float32);
-    outerLoopGainDEPRECATED @8 :Float32;
-    innerLoopGainDEPRECATED @9 :Float32;
-    timeConstantDEPRECATED @10 :Float32;
-    actuatorEffectivenessDEPRECATED @11 :Float32
+    outerLoopGainBP @4 :List(Float32) = [0.];
+    outerLoopGainV @5 :List(Float32);
+    innerLoopGainBP @6 :List(Float32) = [0.];
+    innerLoopGainV @7 :List(Float32);
+    timeConstantBP @8 :List(Float32) = [0.];
+    timeConstantV @9 :List(Float32);
+    actuatorEffectivenessBP @10 :List(Float32) = [0.];
+    actuatorEffectivenessV @11 :List(Float32);
+
+    outerLoopGainDEPRECATED @0 :Float32;
+    innerLoopGainDEPRECATED @1 :Float32;
+    timeConstantDEPRECATED @2 :Float32;
+    actuatorEffectivenessDEPRECATED @3 :Float32;
   }
 
   struct LateralLQRTuning {
@@ -591,4 +593,6 @@ struct CarParams {
     fwdCamera @0;  # Standard/default integration at LKAS camera
     gateway @1;    # Integration at vehicle's CAN gateway
   }
+
+  isPandaBlackDEPRECATED @39: Bool;
 }
