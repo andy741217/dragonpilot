@@ -116,7 +116,7 @@ class CarController():
     apply_accel = clip(apply_accel * ACCEL_SCALE, ACCEL_MIN, ACCEL_MAX)
     
     # slow on curve
-    if CS.out.vEgo < 55 * CV.KPH_TO_MS and (abs(CS.out.steeringAngle) > 15.):
+    if CS.out.vEgo < 55 * CV.KPH_TO_MS and (abs(CS.out.steeringAngleDEG) > 15.):
       apply_accel = apply_accel * 0.5
     
     # Steering Torque
