@@ -65,6 +65,7 @@ keys = {
   b"UpdateAvailable": [TxType.CLEAR_ON_MANAGER_START],
   b"UpdateFailedCount": [TxType.CLEAR_ON_MANAGER_START],
   b"Version": [TxType.PERSISTENT],
+  b"VisionRadarToggle": [TxType.PERSISTENT],
   b"MdpsHarnessEnabled": [TxType.PERSISTENT],
   b"SccEnabled": [TxType.PERSISTENT],
   b"SccHarnessPresent": [TxType.PERSISTENT],
