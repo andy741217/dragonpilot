@@ -471,10 +471,14 @@ struct CarParams {
   }
 
   struct LateralINDITuning {
-    outerLoopGain @0 :Float32;
-    innerLoopGain @1 :Float32;
-    timeConstant @2 :Float32;
-    actuatorEffectiveness @3 :Float32;
+    outerLoopGainBP @0 :List(Float32) = [0.];
+    outerLoopGainV @1 :List(Float32);
+    innerLoopGainBP @2 :List(Float32) = [0.];
+    innerLoopGainV @3 :List(Float32);
+    timeConstantBP @4 :List(Float32) = [0.];
+    timeConstantV @5:List(Float32);
+    actuatorEffectivenessBP @6 :List(Float32) = [0.];
+    actuatorEffectivenessV @7 :List(Float32);
   }
 
   struct LateralLQRTuning {
