@@ -61,14 +61,10 @@ class CarInterface(CarInterfaceBase):
 
     if opParams().get('Enable_INDI'):
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGainBP = [0.]
-      ret.lateralTuning.indi.innerLoopGainV = [3.0]
-      ret.lateralTuning.indi.outerLoopGainBP = [0.]
-      ret.lateralTuning.indi.outerLoopGainV = [2.0]
-      ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.0]
-      ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
-      ret.lateralTuning.indi.actuatorEffectivenessV = [2.0]
+      ret.lateralTuning.indi.innerLoopGainV = 3.0
+      ret.lateralTuning.indi.outerLoopGainV = 2.0
+      ret.lateralTuning.indi.timeConstantV = 1.0
+      ret.lateralTuning.indi.actuatorEffectivenessV = 2.0
         
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
