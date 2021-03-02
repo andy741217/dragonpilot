@@ -84,7 +84,7 @@ class CarController():
     self.lead_visible = False
     self.lead_debounce = 0
     self.prev_gapButton = 0
-    self.gapsettingdance = 2
+    
     self.current_veh_speed = 0
     self.lfainFingerprint = CP.lfaAvailable
     self.vdiff = 0
@@ -138,12 +138,19 @@ class CarController():
     elif (CS.cancel_button_count == 3) and self.cp_oplongcontrol:
       self.usestockscc = not self.usestockscc
 
-    if self.prev_gapButton != CS.cruise_buttons:  # gap change.
-      if CS.cruise_buttons == 3:
-        self.gapsettingdance -= 1
-      if self.gapsettingdance < 1:
-        self.gapsettingdance = 4
-      self.prev_gapButton = CS.cruise_buttons
+    if not self.usestockscc:
+      self.gapcount += 1
+      if self.gapcount == 50 and self.gapsettingdance == 2:
+        self.gapsettingdance = 1
+        self.gapcount = 0
+      elif self.gapcount == 50 and self.gapsettingdance == 1:
+        self.gapcount = 0
+      elif self.gapcount == 50 and self.gapsettingdance == 4:
+        self.gapsettingdance = 3
+        self.gapcount = 0
+      elif self.gapcount == 50 and self.gapsettingdance == 3:
+        self.gapsettingdance = 2
+        self.gapcount = 0
         
     self.apply_steer_last = apply_steer
 
