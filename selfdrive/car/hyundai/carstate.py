@@ -1,32 +1,41 @@
 import copy
 from cereal import car
+import cereal.messaging as messaging
 from selfdrive.car.hyundai.values import DBC, STEER_THRESHOLD, FEATURES, ELEC_VEH, HYBRID_VEH
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
+from common.params import Params
 
 GearShifter = car.CarState.GearShifter
 
 
 class CarState(CarStateBase):
   def __init__(self, CP):
-    super().__init__(CP)
-
+    super().__init__(CP) 
+    
+    self.read_distance_lines = 0
+    
     #Auto detection for setup
     self.cruise_main_button = 0
     self.cruise_buttons = 0
     self.allow_nonscc_available = False
     self.lkasstate = 0
-  
+    self.acc_active = False
     self.lead_distance = 150.
     self.radar_obj_valid = 0.
     self.vrelative = 0.
     self.prev_cruise_buttons = 0
+    self.prev_gap_button = 0
     self.cancel_button_count = 0
     self.cancel_button_timer = 0
     self.leftblinkerflashdebounce = 0
     self.rightblinkerflashdebounce = 0
-
+    self.cruise_gap = 0
+    self.brake_check = 0
+    self.mainsw_check = 0
+    self.pm = messaging.PubMaster(['dynamicFollowButton'])
+    
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsHarness else cp
     cp_sas = cp2 if self.CP.sasBus else cp
@@ -36,7 +45,7 @@ class CarState(CarStateBase):
     self.prev_cruise_buttons = self.cruise_buttons
     self.prev_cruise_main_button = self.cruise_main_button
     self.prev_lkasstate = self.lkasstate
-
+    
     ret = car.CarState.new_message()
 
     ret.doorOpen = any([cp.vl["CGW1"]['CF_Gway_DrvDrSw'], cp.vl["CGW1"]['CF_Gway_AstDrSw'],
@@ -52,11 +61,10 @@ class CarState(CarStateBase):
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
     ret.standstill = ret.vEgoRaw < 0.1
-
+    ret.standStill = self.CP.standStill
     ret.steeringAngle = cp_sas.vl["SAS11"]['SAS_Angle']
     ret.steeringRate = cp_sas.vl["SAS11"]['SAS_Speed']
     ret.yawRate = cp.vl["ESP12"]['YAW_RATE']
-
     self.leftblinkerflash = cp.vl["CGW1"]['CF_Gway_TurnSigLh'] != 0 and cp.vl["CGW1"]['CF_Gway_TSigLHSw'] == 0
     self.rightblinkerflash = cp.vl["CGW1"]['CF_Gway_TurnSigRh'] != 0 and cp.vl["CGW1"]['CF_Gway_TSigRHSw'] == 0
 
@@ -75,12 +83,12 @@ class CarState(CarStateBase):
 
     ret.steeringTorque = cp_mdps.vl["MDPS12"]['CR_Mdps_StrColTq']
     ret.steeringTorqueEps = cp_mdps.vl["MDPS12"]['CR_Mdps_OutTq']
-
+    
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
-
     ret.steerWarning = cp_mdps.vl["MDPS12"]['CF_Mdps_ToiUnavail'] != 0
 
-    self.brakeHold = (cp.vl["ESP11"]['AVH_STAT'] == 1)
+    ret.brakeHold = cp.vl["ESP11"]['AVH_STAT'] == 1
+    self.brakeHold = ret.brakeHold
 
     self.cruise_main_button = cp.vl["CLU11"]["CF_Clu_CruiseSwMain"]
     self.cruise_buttons = cp.vl["CLU11"]["CF_Clu_CruiseSwState"]
@@ -97,20 +105,33 @@ class CarState(CarStateBase):
           self.cancel_button_count = 0
     else:
       self.cancel_button_count = 0
-
+    
+    if self.prev_gap_button != self.cruise_buttons:
+      if self.cruise_buttons == 3:
+        self.cruise_gap -= 1
+      if self.cruise_gap < 1:
+        self.cruise_gap = 4
+      self.prev_gap_button = self.cruise_buttons
+      
     # cruise state
-   
-    if self.CP.openpilotLongitudinalControl:
-       ret.cruiseState.available = cp_scc.vl["SCC11"]["MainMode_ACC"] != 0
-       ret.cruiseState.enabled = cp_scc.vl["SCC12"]['ACCMode'] != 0
-
+    if not self.CP.enableCruise:
+      if self.cruise_buttons == 1 or self.cruise_buttons == 2:
+        self.allow_nonscc_available = True
+        self.brake_check = 0
+        self.mainsw_check = 0
+      ret.cruiseState.available = self.allow_nonscc_available != 0
+      ret.cruiseState.enabled = ret.cruiseState.available
+    elif not self.CP.radarOffCan:
+      ret.cruiseState.available = (cp_scc.vl["SCC11"]["MainMode_ACC"] != 0)
+      ret.cruiseState.enabled = (cp_scc.vl["SCC12"]['ACCMode'] != 0)
+    
     self.lead_distance = cp_scc.vl["SCC11"]['ACC_ObjDist']
     self.vrelative = cp_scc.vl["SCC11"]['ACC_ObjRelSpd']
     self.radar_obj_valid = cp_scc.vl["SCC11"]['ObjValid']
     ret.cruiseState.standstill = cp_scc.vl["SCC11"]['SCCInfoDisplay'] == 4.
 
     self.is_set_speed_in_mph = cp.vl["CLU11"]["CF_Clu_SPEED_UNIT"]
-    if ret.cruiseState.enabled:
+    if ret.cruiseState.enabled and (self.brake_check == 0 or self.mainsw_check == 0):
       speed_conv = CV.MPH_TO_MS if self.is_set_speed_in_mph else CV.KPH_TO_MS
       if self.CP.radarOffCan:
         ret.cruiseState.speed = cp.vl["LVR12"]["CF_Lvr_CruiseSet"] * speed_conv
@@ -119,10 +140,14 @@ class CarState(CarStateBase):
     else:
       ret.cruiseState.speed = 0
 
+    if self.cruise_main_button != 0:
+      self.mainsw_check = 1
     # TODO: Find brake pressure
     ret.brake = 0
     ret.brakePressed = cp.vl["TCS13"]['DriverBraking'] != 0
     self.brakeUnavailable = cp.vl["TCS13"]['ACCEnable'] == 3
+    if ret.brakePressed:
+      self.brake_check = 1
 
     # TODO: Check this
     ret.brakeLights = bool(cp.vl["TCS13"]['BrakeLight'] or ret.brakePressed)
@@ -142,6 +167,14 @@ class CarState(CarStateBase):
 
     self.parkBrake = (cp.vl["CGW1"]['CF_Gway_ParkBrakeSw'] != 0)
 
+    ret.cruiseGapSet = self.cruise_gap
+
+    if self.read_distance_lines != self.cruise_gap:
+      self.read_distance_lines = self.cruise_gap
+      msg_df = messaging.new_message('dynamicFollowButton')
+      msg_df.dynamicFollowButton.status = max(self.read_distance_lines - 1, 0)
+      self.pm.send('dynamicFollowButton', msg_df)
+      
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
     # as this seems to be standard over all cars, but is not the preferred method.
@@ -452,7 +485,7 @@ class CarState(CarStateBase):
       ("CF_Lkas_MsgCount", "LKAS11", 0),
       ("CF_Lkas_FusionState", "LKAS11", 0),
       ("CF_Lkas_FcwOpt_USM", "LKAS11", 0),
-      ("CF_Lkas_LdwsOpt_USM", "LKAS11", 0)
+      ("CF_Lkas_LdwsOpt_USM", "LKAS11", 0),
     ]
 
     checks = [

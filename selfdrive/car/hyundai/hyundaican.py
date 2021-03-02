@@ -1,5 +1,6 @@
 import crcmod
-from common.params import Params
+
+from common.op_params import opParams
 from selfdrive.car.hyundai.values import CAR, CHECKSUM
 
 hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
@@ -77,23 +78,13 @@ def create_clu11(packer, bus, clu11, button, speed, cnt):
   values["CF_Clu_AliveCnt1"] = cnt
   return packer.make_can_msg("CLU11", bus, values)
 
-def create_lfa_mfa(packer, frame, enabled):
+def create_lfahda_mfc(packer, enabled, hda_set_speed=0):
   values = {
-    "ACTIVE": enabled,
-    "HDA_USM": 2,
+    "LFA_Icon_State": 2 if enabled else 0,
+    "HDA_Active": 1 if hda_set_speed else 0,
+    "HDA_Icon_State": 2 if hda_set_speed else 0,
+    "HDA_VSetReq": hda_set_speed,
   }
-
-  # ACTIVE 1 = Green steering wheel icon
-
-  # LFA_USM 2 & 3 = LFA cancelled, fast loud beeping
-  # LFA_USM 0 & 1 = No mesage
-
-  # LFA_SysWarning 1 = "Switching to HDA", short beep
-  # LFA_SysWarning 2 = "Switching to Smart Cruise control", short beep
-  # LFA_SysWarning 3 =  LFA error
-
-  # ACTIVE2: nothing
-  # HDA_USM: nothing
 
   return packer.make_can_msg("LFAHDA_MFC", 0, values)
 
@@ -171,10 +162,14 @@ def create_scc14(packer, enabled, usestockscc, aebcmdact, accel, scc14, objgap, 
           values["ComfortBandUpper"] = 2.
           values["ComfortBandLower"] = 0.
       else:
-        values["JerkUpperLimit"] = 50.
-        values["JerkLowerLimit"] = 50.
-        values["ComfortBandUpper"] = 50.
-        values["ComfortBandLower"] = 50.
+        #values["JerkUpperLimit"] = 50.
+        #values["JerkLowerLimit"] = 50.
+        #values["ComfortBandUpper"] = 50.
+        #values["ComfortBandLower"] = 50.
+        values["JerkUpperLimit"] = 3.2
+        values["JerkLowerLimit"] = 0.1
+        values["ComfortBandUpper"] = 0.24
+        values["ComfortBandLower"] = 0.24
 
   return packer.make_can_msg("SCC14", 0, values)
 
@@ -202,18 +197,16 @@ def create_fca12(packer):
 
 def create_mdps12(packer, frame, mdps12):
   values = mdps12
-  if Params().get('enableLKASbutton'):
-    values["CF_Mdps_ToiActive"] = 0
-    values["CF_Mdps_ToiUnavail"] = 1
-    values["CF_Mdps_MsgCount2"] = frame % 0x100
-    values["CF_Mdps_Chksum2"] = 0
+  values["CF_Mdps_ToiActive"] = 0
+  values["CF_Mdps_ToiUnavail"] = 1
+  values["CF_Mdps_MsgCount2"] = frame % 0x100
+  values["CF_Mdps_Chksum2"] = 0
 
-    dat = packer.make_can_msg("MDPS12", 2, values)[2]
-    checksum = sum(dat) % 256
-    values["CF_Mdps_Chksum2"] = checksum
+  dat = packer.make_can_msg("MDPS12", 2, values)[2]
+  checksum = sum(dat) % 256
+  values["CF_Mdps_Chksum2"] = checksum
 
   return packer.make_can_msg("MDPS12", 2, values)
 
 def create_scc7d0(cmd):
   return[2000, 0, cmd, 0]
-
