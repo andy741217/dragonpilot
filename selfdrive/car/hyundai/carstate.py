@@ -26,15 +26,13 @@ class CarState(CarStateBase):
     self.radar_obj_valid = 0.
     self.vrelative = 0.
     self.prev_cruise_buttons = 0
-    self.prev_gap_button = 0
     self.cancel_button_count = 0
     self.cancel_button_timer = 0
     self.leftblinkerflashdebounce = 0
     self.rightblinkerflashdebounce = 0
-    self.cruise_gap = 0
     self.brake_check = 0
     self.mainsw_check = 0
-    self.pm = messaging.PubMaster(['dynamicFollowButton'])
+    
     
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsHarness else cp
@@ -106,12 +104,7 @@ class CarState(CarStateBase):
     else:
       self.cancel_button_count = 0
     
-    if self.prev_gap_button != self.cruise_buttons:
-      if self.cruise_buttons == 3:
-        self.cruise_gap -= 1
-      if self.cruise_gap < 1:
-        self.cruise_gap = 4
-      self.prev_gap_button = self.cruise_buttons
+    
       
     # cruise state
     if not self.CP.enableCruise:
@@ -167,13 +160,9 @@ class CarState(CarStateBase):
 
     self.parkBrake = (cp.vl["CGW1"]['CF_Gway_ParkBrakeSw'] != 0)
 
-    ret.cruiseGapSet = self.cruise_gap
+    
 
-    if self.read_distance_lines != self.cruise_gap:
-      self.read_distance_lines = self.cruise_gap
-      msg_df = messaging.new_message('dynamicFollowButton')
-      msg_df.dynamicFollowButton.status = max(self.read_distance_lines - 1, 0)
-      self.pm.send('dynamicFollowButton', msg_df)
+    
       
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
