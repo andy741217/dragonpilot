@@ -2150,6 +2150,15 @@ struct Event {
   }
 }
 
+struct DynamicFollowData {
+  mpcTR @0 :Float32;
+  profilePred @1 :UInt16;
+}
+
+struct DynamicFollowButton {
+  status @0 :UInt16;
+}
+
 struct DragonConf {
   dpThermalStarted @0 :Bool;
   dpThermalOverheat @1 :Bool;
