@@ -34,7 +34,7 @@ class CarState(CarStateBase):
     self.cruise_gap = 0
     self.brake_check = 0
     self.mainsw_check = 0
-    self.pm = messaging.PubMaster(['dynamicFollowButton'])
+    
     
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsHarness else cp
