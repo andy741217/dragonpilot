@@ -84,7 +84,8 @@ class CarController():
     self.lead_visible = False
     self.lead_debounce = 0
     self.prev_gapButton = 0
-    
+    self.gapsettingdance = 2
+    self.gapcount = 0
     self.current_veh_speed = 0
     self.lfainFingerprint = CP.lfaAvailable
     self.vdiff = 0
