@@ -266,9 +266,9 @@ class Controls:
       self.events.add(EventName.modeldLagging)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
-    if not self.sm['dragonConf'].dpAtl and CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
-      and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
-      self.events.add(EventName.noTarget)
+    #if not self.sm['dragonConf'].dpAtl and CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
+    #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
+    #  self.events.add(EventName.noTarget)
 
     if self.dp_lead_away_alert:
       current_speed = CS.vEgo * 3.6
