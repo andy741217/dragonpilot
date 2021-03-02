@@ -196,7 +196,17 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
+  # tpms 
+  tpmsPressureFl @39 :Float32;
+  tpmsPressureFr @40 :Float32;
+  tpmsPressureRl @41 :Float32;
+  tpmsPressureRr @42 :Float32;
 
+  radarDistance @43 :Float32;
+  brakeHold @44 :Bool;    # AutoHold
+  cruiseGapSet @45 :UInt8;
+  standStill @46 :Bool;
+  limitSpeedmanual @47 :Bool;
   # dp
   lkMode @37 :Bool;
   stopSteering @38 :Bool; # timebomb - stopSteering
