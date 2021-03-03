@@ -12,24 +12,24 @@ GearShifter = car.CarState.GearShifter
 
 class CarState(CarStateBase):
   def __init__(self, CP):
-    super().__init__(CP) 
-    
-    self.read_distance_lines = 0
+    super().__init__(CP)
     
     #Auto detection for setup
     self.cruise_main_button = 0
     self.cruise_buttons = 0
     self.allow_nonscc_available = False
     self.lkasstate = 0
-   
+    
     self.lead_distance = 150.
     self.radar_obj_valid = 0.
     self.vrelative = 0.
     self.prev_cruise_buttons = 0
+    
     self.cancel_button_count = 0
     self.cancel_button_timer = 0
     self.leftblinkerflashdebounce = 0
     self.rightblinkerflashdebounce = 0
+    
     self.brake_check = 0
     self.mainsw_check = 0
     
@@ -105,7 +105,6 @@ class CarState(CarStateBase):
       self.cancel_button_count = 0
     
     
-      
     # cruise state
     if not self.CP.enableCruise:
       if self.cruise_buttons == 1 or self.cruise_buttons == 2:
@@ -159,8 +158,6 @@ class CarState(CarStateBase):
     ret.espDisabled = (cp.vl["TCS15"]['ESC_Off_Step'] != 0)
 
     self.parkBrake = (cp.vl["CGW1"]['CF_Gway_ParkBrakeSw'] != 0)
-
-    
 
     
       
