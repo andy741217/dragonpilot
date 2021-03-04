@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from cereal import car
-from common.op_params import opParams
 from common.params import Params
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS, Buttons
