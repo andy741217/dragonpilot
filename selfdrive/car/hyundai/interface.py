@@ -2,8 +2,8 @@
 from cereal import car
 from common.params import Params
 from selfdrive.config import Conversions as CV
-from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS, Buttons
-from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
+from selfdrive.car.hyundai.values import CAR, Buttons
+from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 
 EventName = car.CarEvent.EventName
@@ -15,8 +15,8 @@ class CarInterface(CarInterfaceBase):
     self.buttonEvents = []
     self.cp2 = self.CS.get_can2_parser(CP)
     self.visiononlyWarning = False
-    self.belowspeeddingtimer = 0.
-    self.enabled_prev = False
+    
+    
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -324,9 +324,7 @@ class CarInterface(CarInterfaceBase):
     
 
     ret.openpilotLongitudinalControl = True and not (ret.sccBus == 0)
-
-    if ret.openpilotLongitudinalControl:
-      ret.radarTimeStep = .05
+    #ret.radarTimeStep = .05
 
     if candidate in [ CAR.HYUNDAI_GENESIS, CAR.IONIQ_EV_LTD, CAR.IONIQ_HEV, CAR.KONA_EV, CAR.KIA_NIRO_EV, CAR.KIA_SORENTO, CAR.SONATA_2019,
                       CAR.KIA_OPTIMA, CAR.VELOSTER, CAR.KIA_STINGER, CAR.GENESIS_G70, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.GENESIS_G80,
@@ -378,9 +376,9 @@ class CarInterface(CarInterfaceBase):
     self.cp.update_strings(can_strings)
     self.cp2.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
-    
     ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
     ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
+    
     events = self.create_common_events(ret)
 
     # speeds
