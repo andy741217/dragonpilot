@@ -127,10 +127,10 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1490. + STD_CARGO_KG  # weight per hyundai site https://www.hyundaiusa.com/ioniq-electric/specifications.aspx
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73  # Spec
-      tire_stiffness_factor = 0.385
-      ret.lateralTuning.pid.kf = 0.00006
+      tire_stiffness_factor = 0.685
+      ret.lateralTuning.pid.kf = 0.00004
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.16], [0.01]]
     elif candidate in [CAR.GRANDEUR, CAR.GRANDEUR_HEV]:
       ret.mass = 1719. + STD_CARGO_KG
       ret.wheelbase = 2.8
