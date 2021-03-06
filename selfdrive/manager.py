@@ -556,6 +556,8 @@ def main():
   if os.getenv("PREPAREONLY") is not None:
     return
 
+  del managed_processes['loggerd']
+
   # SystemExit on sigterm
   signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(1))
 
