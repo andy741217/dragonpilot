@@ -481,7 +481,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "TAKE CONTROL",
       "Steer Unavailable while Turning",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.MID, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .2),
+      Priority.MID, VisualAlert.none, AudibleAlert.none, .0, .1, .2),
   },
 
   EventName.lkasButtonOff: {
