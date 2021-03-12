@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
     
     ret.maxSteeringAngleDeg = 210.
     
-    eps_modified = False
+    eps_modified = True
     for fw in car_fw:
       if fw.ecu == "eps" and b"," in fw.fwVersion:
         eps_modified = True
