@@ -44,10 +44,10 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiV = [.32, .21, .18, .163, .09]
     ret.longitudinalTuning.deadzoneBP = [0., .5]
     ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
-    ret.gasMaxBP = [0.]
-    ret.gasMaxV = [1.0]
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [2.0]
+    ret.gasMaxBP = [0., 2.5, 4.0, 8.0, 12.0, 15.0, 18.0, 20.0, 23.0, 25.0, 27.0, 28.5]
+    ret.gasMaxV = [0.45, 0.48, 0.51, 0.6, 0.72, 0.78, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96]
+    ret.brakeMaxBP = [0., 2.5, 4.0, 8.0, 12.0, 15.0, 18.0, 20.0, 23.0, 25.0, 27.0, 28.5]
+    ret.brakeMaxV = [0.7, 0.72, 0.75, 0.93, 1.11, 1.25, 1.42, 1.52, 1.7, 1.82, 1.92, 2.0]
     
     ret.maxSteeringAngleDeg = 210.
     
