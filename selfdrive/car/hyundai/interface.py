@@ -32,22 +32,22 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = candidate not in [CAR.SONATA, CAR.PALISADE]
 
-    ret.steerActuatorDelay = 0.4  # Default delay not used, check pathplanner for BPs
+    ret.steerActuatorDelay = 0.1  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.145
     ret.steerLimitTimer = 0.1
     tire_stiffness_factor = 0.385
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
     ret.longitudinalTuning.kpBP = [0., 5., 20.]
-    ret.longitudinalTuning.kpV = [1.8, 1.32, 0.89]
+    ret.longitudinalTuning.kpV = [1.3, 1.0, 0.7]
     ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
-    ret.longitudinalTuning.kiV = [.32, .21, .18, .163, .09]
+    ret.longitudinalTuning.kiV = [0.15, 0.09, 0.068, 0.053, 0.045]
     ret.longitudinalTuning.deadzoneBP = [0., .5]
     ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
-    ret.gasMaxBP = [0.]
-    ret.gasMaxV = [1.]
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [2.]
+    ret.gasMaxBP = [0., 2.5, 4.0, 8.0, 12.0, 15.0, 18.0, 20.0, 23.0, 25.0, 27.0, 28.5]
+    ret.gasMaxV = [1.0, 1.0, 1.0, 1.0, 0.92, 0.918, 0.86, 0.83, 0.81, 0.783, 0.73, 0.68]
+    ret.brakeMaxBP = [0., 2.5, 4.0, 8.0, 12.0, 15.0, 18.0, 20.0, 23.0, 25.0, 27.0, 28.5]
+    ret.brakeMaxV = [2.0, 2.0, 2.0, 2.0, 2.0, 1.25, 1.42, 1.52, 1.7, 1.82, 1.92, 2.0]
     
     ret.maxSteeringAngleDeg = 210.
     
