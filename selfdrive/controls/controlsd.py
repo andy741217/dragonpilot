@@ -277,9 +277,9 @@ class Controls:
         self.events.add(EventName.processNotRunning)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
-    if CS.brakePressed and self.sm['longitudinalPlan'].vTargetFuture >= STARTING_TARGET_SPEED \
-      and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3 and not self.last_model_long:
-      self.events.add(EventName.noTarget)
+    #if CS.brakePressed and self.sm['longitudinalPlan'].vTargetFuture >= STARTING_TARGET_SPEED \
+    #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3 and not self.last_model_long:
+    #  self.events.add(EventName.noTarget)
 
     self.add_stock_additions_alerts(CS)
 
@@ -364,7 +364,7 @@ class Controls:
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if not self.CP.enableCruise:
-      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
+      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.vEgo, CS.gasPressed, CS.buttonEvents, self.enabled, self.is_metric)
     elif self.CP.enableCruise and CS.cruiseState.enabled:
       self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
 
@@ -508,7 +508,9 @@ class Controls:
     CC.hudControl.speedVisible = self.enabled
     CC.hudControl.lanesVisible = self.enabled
     CC.hudControl.leadVisible = self.sm['longitudinalPlan'].hasLead
-
+    CC.hudControl.leadDistance = 0 #self.sm['radarState'].leadOne.dRel
+    CC.hudControl.leadvRel = 0 #self.sm['radarState'].leadOne.vRel
+    CC.hudControl.leadyRel = 0 #self.sm['radarState'].leadOne.yRel
     right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
     left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
     CC.hudControl.rightLaneVisible = bool(right_lane_visible)
