@@ -33,10 +33,10 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = ret.enableGasInterceptor or candidate not in [CAR.SONATA, CAR.PALISADE]
 
-    ret.steerActuatorDelay = 0.4  # Default delay not used, check pathplanner for BPs
+    ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.145
     ret.steerLimitTimer = 0.1
-    tire_stiffness_factor = 0.385
+    tire_stiffness_factor = 0.685
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
     ret.longitudinalTuning.kpBP = [0., 5., 20.]
@@ -70,7 +70,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.indi.outerLoopGainBP = [0.]
       ret.lateralTuning.indi.outerLoopGainV = [2.0]
       ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.0]
+      ret.lateralTuning.indi.timeConstantV = [1.5]
       ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
       ret.lateralTuning.indi.actuatorEffectivenessV = [2.0]
         
