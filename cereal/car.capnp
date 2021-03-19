@@ -120,6 +120,15 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     focusRecoverActiveDEPRECATED @86;
     neosUpdateRequiredDEPRECATED @88;
     modelLagWarningDEPRECATED @93;
+    laneChangeManual @96;
+    emgButtonManual @97;
+    driverSteering @98;
+    modeChangeOpenpilot @99;
+    modeChangeDistcurv @100;
+    modeChangeDistance @101;
+    modeChangeOneway @102;
+    needBrake @103;
+    standStill @104;
   }
 }
 
@@ -185,7 +194,19 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
+  
+  # tpms 
+  tpmsPressureFl @37 :Float32;
+  tpmsPressureFr @38 :Float32;
+  tpmsPressureRl @39 :Float32;
+  tpmsPressureRr @40 :Float32;
 
+  radarDistance @41 :Float32;
+  brakeHold @42 :Bool;    # AutoHold
+  cruiseGapSet @43 :UInt8;
+  standStill @44 :Bool;
+  limitSpeedmanual @45 :Bool;
+  
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
@@ -313,7 +334,10 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
-
+    leadDistance @10:Float32;
+    leadvRel @11:Float32;
+    leadyRel @12:Float32;
+    
     enum VisualAlert {
       # these are the choices from the Honda
       # map as good as you can for your car
@@ -416,7 +440,20 @@ struct CarParams {
   fingerprintSource @49: FingerprintSource;
   networkLocation @50 :NetworkLocation;  # Where Panda/C2 is integrated into the car's CAN network
   hasZss @55: Bool;  # true if ZSS is detected
-
+  mdpsHarness @56: Bool;
+  sasBus @57: Int8;
+  fcaBus @58: Int8;
+  bsmAvailable @59: Bool;
+  lfaAvailable @60: Bool;
+  sccBus @61: Int8;
+  radarDisablePossible @62: Bool;
+  lvrAvailable @63: Bool;
+  evgearAvailable @64: Bool;
+  emsAvailable @65: Bool;
+  clustergearAvailable @66: Bool;
+  tcugearAvailable @67: Bool;
+  standStill @68: Bool;
+  
   struct LateralParams {
     torqueBP @0 :List(Int32);
     torqueV @1 :List(Int32);
@@ -431,6 +468,8 @@ struct CarParams {
     kdV @5 :List(Float32) = [0.];
     kf @6 :Float32;
     newKfTuned @7 :Bool;
+    kfBP @8 :List(Float32);
+    kfV @9 :List(Float32);
   }
 
   struct LongitudinalPIDTuning {
@@ -498,6 +537,7 @@ struct CarParams {
     subaruLegacy @22;  # pre-Global platform
     hyundaiLegacy @23;
     hyundaiCommunity @24;
+    hyundaiCommunityNonscc @25;
   }
 
   enum SteerControlType {
