@@ -45,7 +45,7 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.deadzoneBP = [0., .5]
     ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [1.0]
+    ret.gasMaxV = [0.50]
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [2.0]
     
