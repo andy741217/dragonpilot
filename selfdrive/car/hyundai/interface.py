@@ -35,7 +35,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.1  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.145
     ret.steerLimitTimer = 0.1
-    tire_stiffness_factor = 0.385
+    tire_stiffness_factor = 0.685
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
     ret.longitudinalTuning.kpBP = [0., 5., 20.]
