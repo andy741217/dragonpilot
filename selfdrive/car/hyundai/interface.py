@@ -205,11 +205,11 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 14.5
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGainBP = [0.]
-      ret.lateralTuning.indi.innerLoopGainV = [3.0]
+      ret.lateralTuning.indi.innerLoopGainV = [3.3]
       ret.lateralTuning.indi.outerLoopGainBP = [0.]
       ret.lateralTuning.indi.outerLoopGainV = [2.0]
       ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.0]
+      ret.lateralTuning.indi.timeConstantV = [1.5]
       ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
       ret.lateralTuning.indi.actuatorEffectivenessV = [2.0]
       if eps_modified:
