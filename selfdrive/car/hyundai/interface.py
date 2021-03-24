@@ -51,9 +51,9 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [2.0]  
     
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
+    ret.lateralTuning.pid.kpV = [0.11, 0.12, 0.13]
     ret.lateralTuning.pid.kiBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
+    ret.lateralTuning.pid.kiV = [0.01, 0.015, 0.02]
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
     ret.lateralTuning.pid.kfV = [0.000015, 0.00002, 0.000025]
     
