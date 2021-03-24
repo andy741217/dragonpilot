@@ -33,7 +33,7 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = candidate not in [CAR.SONATA, CAR.PALISADE]
 
-    ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
+    ret.steerActuatorDelay = 0.1  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.145
     ret.steerLimitTimer = 0.1
     tire_stiffness_factor = 0.685
@@ -51,13 +51,7 @@ class CarInterface(CarInterfaceBase):
     ret.brakeMaxV = [2.0]  
     
     
-    ret.lateralTuning.pid.kf = 0.00001
-    ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
-    ret.lateralTuning.pid.kiBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kiV = [0.001, 0.0015, 0.002]
-    ret.lateralTuning.pid.kfBP = [0., 10., 30.]
-    ret.lateralTuning.pid.kfV = [0.000015, 0.00002, 0.000025]
+    
 
     if opParams().get('Enable_INDI'):
       ret.lateralTuning.init('indi')
@@ -140,8 +134,9 @@ class CarInterface(CarInterfaceBase):
      
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 14.5
-     
+      ret.steerRatio = 12.5
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.12], [0.02]]
+      ret.lateralTuning.pid.kf = 0.00003
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
