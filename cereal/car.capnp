@@ -440,6 +440,7 @@ struct CarParams {
   lvrAvailable @62: Bool;
   evgearAvailable @63: Bool;
   emsAvailable @64: Bool;
+  standStill @65: Bool;
 
   struct LateralParams {
     torqueBP @0 :List(Int32);
