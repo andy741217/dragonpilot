@@ -40,7 +40,7 @@ class CarInterface(CarInterfaceBase):
     ret.maxSteeringAngleDeg = 1000.
     ret.startAccel = 1.0
 
-    eps_modified = False
+    eps_modified = True
     for fw in car_fw:
       if fw.ecu == "eps" and b"," in fw.fwVersion:
         eps_modified = True
@@ -158,6 +158,8 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
+      if eps_modified:
+        ret.maxSteeringAngleDeg = 1000.
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
