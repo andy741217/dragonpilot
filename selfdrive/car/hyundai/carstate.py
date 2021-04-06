@@ -26,7 +26,8 @@ class CarState(CarStateBase):
     self.cancel_button_timer = 0
     self.leftblinkerflashdebounce = 0
     self.rightblinkerflashdebounce = 0
-
+    self.brake_check = 0
+    self.mainsw_check = 0
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsHarness else cp
     cp_sas = cp2 if self.CP.sasBus else cp
@@ -52,7 +53,7 @@ class CarState(CarStateBase):
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
     ret.standstill = ret.vEgoRaw < 0.1
-
+    ret.standStill = self.CP.standStill
     ret.steeringAngleDeg = cp_sas.vl["SAS11"]['SAS_Angle']
     ret.steeringRateDeg = cp_sas.vl["SAS11"]['SAS_Speed']
     ret.yawRate = cp.vl["ESP12"]['YAW_RATE']
@@ -102,8 +103,10 @@ class CarState(CarStateBase):
     if not self.CP.enableCruise:
       if self.cruise_buttons == 1 or self.cruise_buttons == 2:
         self.allow_nonscc_available = True
-      ret.cruiseState.available = True
-      ret.cruiseState.enabled = self.allow_nonscc_available != 0
+        self.brake_check = 0
+        self.mainsw_check = 0
+      ret.cruiseState.available = self.allow_nonscc_available != 0
+      ret.cruiseState.enabled = ret.cruiseState.available
     elif not self.CP.radarOffCan:
       ret.cruiseState.available = (cp_scc.vl["SCC11"]["MainMode_ACC"] != 0)
       ret.cruiseState.enabled = (cp_scc.vl["SCC12"]['ACCMode'] != 0)
@@ -114,7 +117,7 @@ class CarState(CarStateBase):
     ret.cruiseState.standstill = cp_scc.vl["SCC11"]['SCCInfoDisplay'] == 4.
 
     self.is_set_speed_in_mph = cp.vl["CLU11"]["CF_Clu_SPEED_UNIT"]
-    if ret.cruiseState.enabled:
+    if ret.cruiseState.enabled and (self.brake_check == 0 or self.mainsw_check == 0):
       speed_conv = CV.MPH_TO_MS if self.is_set_speed_in_mph else CV.KPH_TO_MS
       if self.CP.radarOffCan:
         ret.cruiseState.speed = cp.vl["LVR12"]["CF_Lvr_CruiseSet"] * speed_conv
@@ -122,12 +125,15 @@ class CarState(CarStateBase):
         ret.cruiseState.speed = cp_scc.vl["SCC11"]['VSetDis'] * speed_conv
     else:
       ret.cruiseState.speed = 0
-
+    
+    if self.cruise_main_button != 0:
+      self.mainsw_check = 1
     # TODO: Find brake pressure
     ret.brake = 0
     ret.brakePressed = cp.vl["TCS13"]['DriverBraking'] != 0
     self.brakeUnavailable = cp.vl["TCS13"]['ACCEnable'] == 3
-
+    if ret.brakePressed:
+      self.brake_check = 1
     # TODO: Check this
     ret.brakeLights = bool(cp.vl["TCS13"]['BrakeLight'] or ret.brakePressed)
 
@@ -211,8 +217,8 @@ class CarState(CarStateBase):
 
     self.lkasstate = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
     self.lkasbutton = self.lkasstate != self.prev_lkasstate and (self.lkasstate == 0 or self.prev_lkasstate == 0)
-    self.brake_hold = cp.vl["TCS15"]['AVH_LAMP'] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
-    self.brake_error = cp.vl["TCS13"]['ACCEnable'] != 0 # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
+    #self.brake_hold = cp.vl["TCS15"]['AVH_LAMP'] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
+    #self.brake_error = cp.vl["TCS13"]['ACCEnable'] != 0 # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
 
     # save the entire LKAS11, CLU11, SCC12 and MDPS12
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
