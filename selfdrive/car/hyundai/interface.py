@@ -37,7 +37,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerRateCost = 0.5
     ret.steerLimitTimer = 0.1
     tire_stiffness_factor = 0.7
-    ret.maxSteeringAngleDeg = 90.
+    ret.maxSteeringAngleDeg = 1000.
     ret.startAccel = 1.0
 
     eps_modified = False
@@ -202,7 +202,7 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-    ret.mdpsHarness = Params().get('MdpsHarnessEnabled') == b'1'
+    ret.mdpsHarness = False if 593 in fingerprint[0] else True
     ret.sasBus = 0 if (688 in fingerprint[0] or not ret.mdpsHarness) else 1
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
     ret.bsmAvailable = True if 1419 in fingerprint[0] else False
@@ -211,14 +211,14 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
-    if Params().get('SccEnabled') == b'1':
-      ret.sccBus = 2 if 1057 in fingerprint[2] and Params().get('SccHarnessPresent') == b'1' else 0 if 1057 in fingerprint[0] else -1
+    if True:
+      ret.sccBus = 2 if 1057 in fingerprint[2] and True else 0 if 1057 in fingerprint[0] else -1
     else:
       ret.sccBus = -1
 
     ret.radarOffCan = (ret.sccBus == -1)
 
-    ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1' and not (ret.sccBus == 0)
+    ret.openpilotLongitudinalControl = True and not (ret.sccBus == 0)
 
     if ret.openpilotLongitudinalControl:
       ret.radarTimeStep = .05
@@ -252,9 +252,9 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = True
 
-    ret.radarDisablePossible = Params().get('RadarDisableEnabled') == b'1'
+    ret.radarDisablePossible = False
 
-    ret.enableCruise = Params().get('EnableOPwithCC') == b'1' and ret.sccBus == 0
+    ret.enableCruise = False and ret.sccBus == 0
 
     if ret.radarDisablePossible:
       ret.openpilotLongitudinalControl = True
@@ -349,7 +349,7 @@ class CarInterface(CarInterfaceBase):
                 and ((self.CC.setspeed > self.CC.clu11_speed - 2) or ret.standstill or self.CC.usestockscc):
           events.add(EventName.buttonEnable)
           events.add(EventName.pcmEnable)
-        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton and opParams().get('enableLKASbutton'):
+        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton:
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
         if b.type == ButtonType.altButton3 and b.pressed:
