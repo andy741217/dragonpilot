@@ -103,6 +103,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     dashcamMode @96;
     visiononlyWarning @ 97;
     belowSteerSpeedDing @ 98;
+    standStill @99;
 
     radarCanErrorDEPRECATED @15;
     radarCommIssueDEPRECATED @67;
@@ -188,7 +189,13 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
-
+  
+  radarDistance @37 :Float32;
+  brakeHold @38 :Bool;    # AutoHold
+  cruiseGapSet @39 :UInt8;
+  standStill @40 :Bool;
+  limitSpeedmanual @41 :Bool;
+  
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
