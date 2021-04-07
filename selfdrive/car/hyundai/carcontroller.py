@@ -122,8 +122,8 @@ class CarController():
     self.steer_rate_limited = new_steer != apply_steer
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
-    self.high_steer_allowed = True if self.car_fingerprint in FEATURES["allow_high_steer"] else False
-    lkas_active = enabled and ((abs(CS.out.steeringAngleDeg) < CS.CP.maxSteeringAngleDeg) or self.high_steer_allowed)
+   
+    lkas_active = enabled
 
     # fix for Genesis hard fault at low speed
     if CS.out.vEgo < 55 * CV.KPH_TO_MS and self.car_fingerprint == CAR.HYUNDAI_GENESIS and CS.CP.minSteerSpeed > 0.:
