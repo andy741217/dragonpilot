@@ -33,9 +33,9 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = candidate not in [CAR.SONATA, CAR.PALISADE]
 
-    ret.steerActuatorDelay = 0.3  # Default delay
+    ret.steerActuatorDelay = 0.6  # Default delay
     ret.steerRateCost = 0.5
-    ret.steerLimitTimer = 0.1
+    ret.steerLimitTimer = 1.5
     tire_stiffness_factor = 0.7
     ret.maxSteeringAngleDeg = 1000.
     ret.startAccel = 1.0
@@ -157,7 +157,7 @@ class CarInterface(CarInterfaceBase):
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
       ret.mass = 1490. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73 * 1.15
+      ret.steerRatio = 17.5
       if eps_modified:
         ret.maxSteeringAngleDeg = 1000.
     elif candidate == CAR.KIA_FORTE:
