@@ -21,7 +21,10 @@
 
 QWidget * toggles_panel() {
   QVBoxLayout *toggles_list = new QVBoxLayout();
-  
+  toggles_list->addWidget(new ParamControl("SccHarnessPresent",
+                                           "SccHarnessPresent",
+                                           "disenable radar by disconnect ",
+                                           "../assets/offroad/icon_road.png"));
   toggles_list->addWidget(new ParamControl("RadarDisableEnabled",
                                            "RadarDisableEnabled",
                                            "disenable radar and use vision longcontrol and be carefully,no fcw",
