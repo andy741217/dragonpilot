@@ -10,6 +10,8 @@ from selfdrive.car.interfaces import CarInterfaceBase
 EventName = car.CarEvent.EventName
 ButtonType = car.CarState.ButtonEvent.Type
 
+params = Params()
+
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
     super().__init__(CP, CarController, CarState)
