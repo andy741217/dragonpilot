@@ -216,7 +216,7 @@ class CarInterface(CarInterfaceBase):
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
     if True:
-      ret.sccBus = 2 if 1057 in fingerprint[2] and params().get('SccHarnessPresent') == b'1' else 0 if 1057 in fingerprint[0] else -1
+      ret.sccBus = 2 if 1057 in fingerprint[2] and Params().get('SccHarnessPresent') == b'1' else 0 if 1057 in fingerprint[0] else -1
     else:
       ret.sccBus = -1
 
