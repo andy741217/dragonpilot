@@ -256,7 +256,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = True
 
-    ret.radarDisablePossible = params.get("RadarDisableEnabled", encoding='utf8') == "1"
+    ret.radarDisablePossible = params.get("RadarDisableEnabled") == "1"
 
     ret.enableCruise = False and ret.sccBus == 0
 
