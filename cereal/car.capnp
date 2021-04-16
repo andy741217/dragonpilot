@@ -189,7 +189,7 @@ struct CarState {
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
-  
+  cruiseGap @42 : Int32;
   radarDistance @37 :Float32;
   brakeHold @38 :Bool;    # AutoHold
   cruiseGapSet @39 :UInt8;
