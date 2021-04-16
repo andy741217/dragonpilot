@@ -23,7 +23,8 @@ class LongitudinalMpc():
     self.prev_lead_status = False
     self.prev_lead_x = 0.0
     self.new_lead = False
-
+    self.cruise_gap = 0
+    self.auto_tr = False
     self.last_cloudlog_t = 0.0
     self.n_its = 0
     self.duration = 0
@@ -94,7 +95,16 @@ class LongitudinalMpc():
 
     # Calculate mpc
     t = sec_since_boot()
-    self.n_its = self.libmpc.run_mpc(self.cur_state, self.mpc_solution, self.a_lead_tau, a_lead)
+    
+    if self.auto_tr:
+      TR = interp(v_ego, [3., 30.], [1.2, 2.2])
+    else:
+      cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
+      TR = interp(float(cruise_gap), [1., 2., 3., 4.], [1.2, 1.5, 1.8, 2.2])
+
+      if self.cruise_gap != cruise_gap:
+        self.cruise_gap = cruise_gap
+    self.n_its = self.libmpc.run_mpc(self.cur_state, self.mpc_solution, self.a_lead_tau, a_lead, TR)
     self.duration = int((sec_since_boot() - t) * 1e9)
 
     # Get solution. MPC timestep is 0.2 s, so interpolation to 0.05 s is needed
