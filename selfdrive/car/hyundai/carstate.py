@@ -17,7 +17,7 @@ class CarState(CarStateBase):
     self.cruise_buttons = 0
     self.allow_nonscc_available = False
     self.lkasstate = 0
-  
+    self.prev_gap_button = 0
     self.lead_distance = 150.
     self.radar_obj_valid = 0.
     self.vrelative = 0.
@@ -28,6 +28,7 @@ class CarState(CarStateBase):
     self.rightblinkerflashdebounce = 0
     self.brake_check = 0
     self.mainsw_check = 0
+    self.cruise_gap = 0
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsHarness else cp
     cp_sas = cp2 if self.CP.sasBus else cp
@@ -98,7 +99,14 @@ class CarState(CarStateBase):
           self.cancel_button_count = 0
     else:
       self.cancel_button_count = 0
-
+    
+    if self.prev_gap_button != self.cruise_buttons:
+      if self.cruise_buttons == 3:
+        self.cruise_gap -= 1
+      if self.cruise_gap < 1:
+        self.cruise_gap = 4
+      self.prev_gap_button = self.cruise_buttons
+      
     # cruise state
     if not self.CP.enableCruise:
       if self.cruise_buttons == 1 or self.cruise_buttons == 2:
@@ -151,7 +159,11 @@ class CarState(CarStateBase):
     ret.espDisabled = (cp.vl["TCS15"]['ESC_Off_Step'] != 0)
 
     self.parkBrake = (cp.vl["TCS13"]['PBRAKE_ACT'] == 1)
-
+    
+    ret.cruiseGap = self.cruise_gap
+    
+      
+    
     # TODO: refactor gear parsing in function
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
     # as this seems to be standard over all cars, but is not the preferred method.
