@@ -1,6 +1,8 @@
 import os
 import math
 
+from common.numpy_fast import clip, interp
+
 import cereal.messaging as messaging
 from selfdrive.swaglog import cloudlog
 from common.realtime import sec_since_boot
