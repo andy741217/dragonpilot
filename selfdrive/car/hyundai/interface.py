@@ -49,19 +49,18 @@ class CarInterface(CarInterfaceBase):
 
 
     #Long tuning Params -  make individual params for cars, baseline Hyundai genesis
-    ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 50. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [0.95, 0.8, 0.6, 0.5, 0.4]
-    ret.longitudinalTuning.kiBP = [0.]
-    ret.longitudinalTuning.kiV = [0.015]
-      
-    ret.longitudinalTuning.deadzoneBP = [0., 100.*CV.KPH_TO_MS]
-    ret.longitudinalTuning.deadzoneV = [0., 0.015]
-
-    ret.gasMaxBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS ]
-    ret.gasMaxV = [0.4, 0.28, 0.2, 0.13, 0.1]
-
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [1.3]
+    ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpV = [1.8, 1.5, 1.3, 0.8, 0.5]
+    ret.longitudinalTuning.kiBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kiV = [0.15, .055, .05, .045, .03]
+    ret.longitudinalTuning.deadzoneBP = [0., .5]
+    ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
+    ret.gasMaxBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 110.*CV.KPH_TO_MS ]
+    ret.gasMaxV = [0.5, 2.0, 1.5, 0.8, 0.5]
+    ret.brakeMaxBP = [0., 5., 5.1]
+    ret.brakeMaxV = [3.5, 3.5, 3.5]  # safety limits to stop unintended deceleration
+    ret.longitudinalTuning.kfBP = [0., 5., 10., 20., 30.]
+    ret.longitudinalTuning.kfV = [1., 1., 1., .75, .5]
 
     ret.lateralTuning.pid.kpBP = [0., 10., 30.]
     ret.lateralTuning.pid.kpV = [0.01, 0.02, 0.03]
