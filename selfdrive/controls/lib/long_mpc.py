@@ -26,6 +26,7 @@ class LongitudinalMpc():
     self.prev_lead_x = 0.0
     self.new_lead = False
     self.cruise_gap = 0
+    self.auto_tr = False
     self.last_cloudlog_t = 0.0
     self.n_its = 0
     self.duration = 0
