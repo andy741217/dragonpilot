@@ -157,11 +157,11 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73 * 1.15
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
-      ret.mass = 1685. + STD_CARGO_KG
+      ret.mass = 1450. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 17.5
+      ret.steerRatio = 13.73 * 1.15
       if eps_modified:
-        ret.maxSteeringAngleDeg = 1000.
+        ret.maxSteeringAngleDeg = 210.
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
