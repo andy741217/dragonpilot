@@ -101,16 +101,15 @@ class LongitudinalMpc():
       TR = interp(v_ego, [3., 30.], [1.2, 2.2])
     else:
       cruise_gap = int(cruise_gap)
-      if int(cruise_gap) == 1:
+      if cruise_gap == 1:
         TR = 1.2
-      elif int(cruise_gap) == 2:
+      elif cruise_gap == 2:
         TR = 1.5
-      elif int(cruise_gap) == 3:
+      elif cruise_gap == 3:
         TR = 1.8
-      elif int(cruise_gap) == 4:
+      elif cruise_gap == 4:
         TR = 2.2
-      else:
-        TR = 1.5
+      
       #TR = interp(float(cruise_gap), [1., 2., 3., 4.], [1.2, 1.5, 1.8, 2.2])
 
       if self.cruise_gap != cruise_gap:
