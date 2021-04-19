@@ -99,17 +99,17 @@ class LongitudinalMpc():
     cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
     if cruise_gap == 1:
        TR = 1.2
-    elif cruise_gap == 2:
+     elif cruise_gap == 2:
        TR = 1.5
-    elif cruise_gap == 3:
+     elif cruise_gap == 3:
        TR = 1.8
-    elif cruise_gap == 4:
+     elif cruise_gap == 4:
        TR = 2.2
     else:
        TR = 1.5
     
 
-      if self.cruise_gap != cruise_gap:
+    if self.cruise_gap != cruise_gap:
         self.cruise_gap = cruise_gap
     self.n_its = self.libmpc.run_mpc(self.cur_state, self.mpc_solution, self.a_lead_tau, a_lead, TR)
     self.duration = int((sec_since_boot() - t) * 1e9)
