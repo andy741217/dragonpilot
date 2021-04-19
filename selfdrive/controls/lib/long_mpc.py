@@ -96,7 +96,10 @@ class LongitudinalMpc():
 
     # Calculate mpc
     t = sec_since_boot()
-    cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
+    if self.auto_tr:
+      TR = interp(v_ego, [3., 30.], [1.2, 2.2])
+    else:
+      cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
       TR = interp(float(cruise_gap), [1., 2., 3., 4.], [1.2, 1.5, 1.8, 2.2])
 
       if self.cruise_gap != cruise_gap:
