@@ -112,7 +112,7 @@ class LongitudinalMpc():
       #else:
       #   TR = 1.5
       cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
-      TR = interp(float(cruise_gap), [1., 2., 3., 4.], [0.9, 1.2, 1.5, 1.8])
+      TR = interp(float(cruise_gap), [1., 2., 3., 4.], [0.8, 0.95, 1.25, 1.55])
 
       if self.cruise_gap != cruise_gap:
         self.cruise_gap = cruise_gap
