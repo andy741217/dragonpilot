@@ -107,7 +107,7 @@ class LongitudinalMpc():
          TR = 1.5
       elif  int(cruise_gap) == 3:
          TR = 1.8
-      else:
+      else int(cruise_gap) == 4:
          TR = 2.2
       #else:
       #   TR = 1.5
