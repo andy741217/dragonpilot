@@ -104,11 +104,11 @@ class LongitudinalMpc():
       if cruise_gap == 1:
          TR = 1.2
       elif  cruise_gap == 2:
-         TR = 1.5
+         TR = 2.2
       elif  cruise_gap == 3:
          TR = 1.8
       else:
-         TR = 2.2
+         TR = 1.5
       #else:
       #   TR = 1.5
       #cruise_gap = int(clip(CS.cruiseGap, 1., 4.))
