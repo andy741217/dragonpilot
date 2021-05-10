@@ -100,12 +100,12 @@ class CarState(CarStateBase):
     else:
       self.cancel_button_count = 0
     
-    #if self.prev_gap_button != self.cruise_buttons:
-    #  if self.cruise_buttons == 3:
-    #    self.cruise_gap -= 1
-    #  if self.cruise_gap < 1:
-    #    self.cruise_gap = 4
-    #  self.prev_gap_button = self.cruise_buttons
+    if self.prev_gap_button != self.cruise_buttons:
+      if self.cruise_buttons == 3:
+        self.cruise_gap -= 1
+      if self.cruise_gap < 1:
+        self.cruise_gap = 4
+      self.prev_gap_button = self.cruise_buttons
       
     # cruise state
     if not self.CP.enableCruise:
