@@ -182,7 +182,7 @@ FINGERPRINTS = {
 }
 
 # Don't use these fingerprints for fingerprinting, they are still used for ECU detection
-IGNORED_FINGERPRINTS = [CAR.KIA_NIRO_EV, CAR.ELANTRA_2020, CAR.GENESIS_G70, CAR.KIA_SELTOS]
+#IGNORED_FINGERPRINTS = []
 
 FW_VERSIONS = {
   CAR.SONATA: {
