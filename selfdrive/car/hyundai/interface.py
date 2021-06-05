@@ -4,7 +4,7 @@ from cereal import car
 from common.params import Params
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import CAR, Buttons
-from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
+from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, is_ecu_disconnected
 from selfdrive.car.interfaces import CarInterfaceBase
 
 EventName = car.CarEvent.EventName
@@ -24,8 +24,8 @@ class CarInterface(CarInterfaceBase):
     return float(accel) / 1.0
 
   @staticmethod
-  def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=[]):  # pylint: disable=dangerous-default-value
-    ret = CarInterfaceBase.get_std_params(candidate, fingerprint)
+  def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=[], has_relay=False):  # pylint: disable=dangerous-default-value
+    ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
 
     ret.carName = "hyundai"
     ret.safetyModel = car.CarParams.SafetyModel.hyundai
@@ -250,7 +250,7 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.enableCamera = True
+    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
 
     ret.radarDisablePossible = False
 
@@ -349,7 +349,7 @@ class CarInterface(CarInterfaceBase):
                 and ((self.CC.setspeed > self.CC.clu11_speed - 2) or ret.standstill or self.CC.usestockscc):
           events.add(EventName.buttonEnable)
           events.add(EventName.pcmEnable)
-        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton and opParams().get('enableLKASbutton'):
+        if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton:
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
         if b.type == ButtonType.altButton3 and b.pressed:
