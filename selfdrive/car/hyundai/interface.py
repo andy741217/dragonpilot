@@ -202,7 +202,7 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-    ret.mdpsHarness = Params().get('MdpsHarnessEnabled') == b'1'
+    ret.mdpsHarness = False if 593 in fingerprint[0] else True
     ret.sasBus = 0 if (688 in fingerprint[0] or not ret.mdpsHarness) else 1
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
     ret.bsmAvailable = True if 1419 in fingerprint[0] else False
