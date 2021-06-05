@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from cereal import car
-from common.op_params import opParams
+
 from common.params import Params
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import CAR, Buttons
@@ -67,16 +67,16 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
     ret.lateralTuning.pid.kfV = [0.000015, 0.00002, 0.000025]
 
-    if opParams().get('Enable_INDI'):
-      ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGainBP = [0.]
-      ret.lateralTuning.indi.innerLoopGainV = [2.]
-      ret.lateralTuning.indi.outerLoopGainBP = [0.]
-      ret.lateralTuning.indi.outerLoopGainV = [3.0]
-      ret.lateralTuning.indi.timeConstantBP = [0.]
-      ret.lateralTuning.indi.timeConstantV = [1.4]
-      ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
-      ret.lateralTuning.indi.actuatorEffectivenessV = [2.]
+    #if opParams().get('Enable_INDI'):
+    #  ret.lateralTuning.init('indi')
+    #  ret.lateralTuning.indi.innerLoopGainBP = [0.]
+    #  ret.lateralTuning.indi.innerLoopGainV = [2.]
+    #  ret.lateralTuning.indi.outerLoopGainBP = [0.]
+    #  ret.lateralTuning.indi.outerLoopGainV = [3.0]
+    #  ret.lateralTuning.indi.timeConstantBP = [0.]
+    #  ret.lateralTuning.indi.timeConstantV = [1.4]
+    #  ret.lateralTuning.indi.actuatorEffectivenessBP = [0.]
+    #  ret.lateralTuning.indi.actuatorEffectivenessV = [2.]
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
