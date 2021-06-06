@@ -250,7 +250,7 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.enableCamera = has_relay
+    ret.enableCamera = True
     ret.radarDisablePossible = False
 
     ret.enableCruise = False and ret.sccBus == 0
