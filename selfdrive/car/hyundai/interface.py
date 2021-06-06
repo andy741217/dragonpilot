@@ -3,7 +3,7 @@ from cereal import car
 
 from common.params import Params
 from selfdrive.config import Conversions as CV
-from selfdrive.car.hyundai.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS, Buttons
+from selfdrive.car.hyundai.values import Ecu, CAR, FINGERPRINTS, Buttons
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, is_ecu_disconnected
 from selfdrive.car.interfaces import CarInterfaceBase
 
@@ -250,8 +250,7 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-    ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) \
-                       or has_relay
+    ret.enableCamera = has_relay
     ret.radarDisablePossible = False
 
     ret.enableCruise = False and ret.sccBus == 0
