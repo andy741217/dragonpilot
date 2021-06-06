@@ -171,6 +171,12 @@ struct CarState {
   espDisabled @32 :Bool;
   hightorqUnavailable @37 :Bool;
   accgasOverride @38 :Bool;
+  radarDistance @39 :Float32;
+  brakeHold @40 :Bool;    # AutoHold
+  cruiseGapSet @41 :UInt8;
+  standStill @42 :Bool;
+  limitSpeedmanual @43 :Bool;
+  cruiseGap @44 : Int32;
 
   # cruise state
   cruiseState @10 :CruiseState;
@@ -449,6 +455,7 @@ struct CarParams {
   lvrAvailable @62: Bool;
   evgearAvailable @63: Bool;
   emsAvailable @64: Bool;
+  standStill @65: Bool;
 
   struct LateralParams {
     torqueBP @0 :List(Int32);
