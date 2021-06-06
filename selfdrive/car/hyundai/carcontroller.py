@@ -83,7 +83,7 @@ class CarController():
     self.lead_visible = False
     self.lead_debounce = 0
     self.gapsettingdance = 2
-    self.gapcount = 0
+    self.prev_gapButton = 0
     self.current_veh_speed = 0
     self.lfainFingerprint = CP.lfaAvailable
     self.vdiff = 0
@@ -98,7 +98,9 @@ class CarController():
     self.sendaccmode = not CP.radarDisablePossible
     self.enabled = False
     self.sm = messaging.SubMaster(['controlsState'])
-
+    self.acc_standstill_timer = 0
+    self.acc_standstill = False
+    
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart,
              set_speed, lead_visible, lead_dist, lead_vrel, lead_yrel):
@@ -135,20 +137,12 @@ class CarController():
     elif (CS.cancel_button_count == 3) and self.cp_oplongcontrol:
       self.usestockscc = not self.usestockscc
 
-    if not self.usestockscc:
-      self.gapcount += 1
-      if self.gapcount == 50 and self.gapsettingdance == 2:
-        self.gapsettingdance = 1
-        self.gapcount = 0
-      elif self.gapcount == 50 and self.gapsettingdance == 1:
+    if self.prev_gapButton != CS.cruise_buttons:  # gap change.
+      if CS.cruise_buttons == 3:
+        self.gapsettingdance -= 1
+      if self.gapsettingdance < 1:
         self.gapsettingdance = 4
-        self.gapcount = 0
-      elif self.gapcount == 50 and self.gapsettingdance == 4:
-        self.gapsettingdance = 3
-        self.gapcount = 0
-      elif self.gapcount == 50 and self.gapsettingdance == 3:
-        self.gapsettingdance = 2
-        self.gapcount = 0
+      self.prev_gapButton = CS.cruise_buttons
 
     self.apply_steer_last = apply_steer
 
@@ -186,7 +180,7 @@ class CarController():
 
       can_sends.append(create_clu11(self.packer, 1, CS.clu11, Buttons.NONE, enabled_speed, self.clu11_cnt))
 
-    if pcm_cancel_cmd and CS.scc12["ACCMode"] != 0 and not CS.out.standstill and CS.CP.enableCruise:
+    if pcm_cancel_cmd and CS.scc12["ACCMode"] != 0 and not CS.out.standstill:
       self.vdiff = 0.
       self.resumebuttoncnt = 0
       can_sends.append(create_clu11(self.packer, CS.CP.sccBus, CS.clu11, Buttons.CANCEL, self.current_veh_speed, self.clu11_cnt))
@@ -206,9 +200,20 @@ class CarController():
       self.sm.update(0)
       long_control_state = self.sm['controlsState'].longControlState
       self.acc_standstill = True if long_control_state == LongCtrlState.stopping else False
+      if self.acc_standstill == True and not CS.out.gasPressed:
+        self.acc_standstill_timer += 1
+        if self.acc_standstill_timer >= 200:
+          self.acc_standstill_timer = 200
+      elif CS.out.gasPressed:
+        self.acc_standstill_timer = 0
+      else:
+        self.acc_standstill_timer = 0
+    elif CS.out.gasPressed or CS.out.vEgo > 1:
+      self.acc_standstill = False
+      self.acc_standstill_timer = 0
     else:
       self.acc_standstill = False
-
+      self.acc_standstill_timer = 0
     if lead_visible:
       self.lead_visible = True
       self.lead_debounce = 50
@@ -290,7 +295,13 @@ class CarController():
                                       CS.out.standstill, CS.scc11,
                                       self.usestockscc, CS.CP.radarOffCan, self.scc11cnt, self.sendaccmode))
 
-        can_sends.append(create_scc12(self.packer, apply_accel, enabled,
+        if CS.brake_check == 1 or CS.mainsw_check == 1:
+          can_sends.append(create_scc12(self.packer, apply_accel, enabled,
+                                      self.acc_standstill, CS.out.gasPressed, 1,
+                                      CS.out.stockAeb,
+                                      CS.scc12, self.usestockscc, CS.CP.radarOffCan, self.scc12cnt))
+        else:
+          can_sends.append(create_scc12(self.packer, apply_accel, enabled,
                                       self.acc_standstill, CS.out.gasPressed, CS.out.brakePressed,
                                       CS.out.stockAeb,
                                       CS.scc12, self.usestockscc, CS.CP.radarOffCan, self.scc12cnt))

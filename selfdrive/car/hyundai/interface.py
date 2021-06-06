@@ -202,7 +202,7 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-    ret.mdpsHarness = opParams().get('MdpsHarnessEnabled') 
+    ret.mdpsHarness = False if 593 in fingerprint[0] else True
     ret.sasBus = 0 if (688 in fingerprint[0] or not ret.mdpsHarness) else 1
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
     ret.bsmAvailable = True if 1419 in fingerprint[0] else False
@@ -297,12 +297,10 @@ class CarInterface(CarInterfaceBase):
     if self.CP.sccBus == 2:
       self.CP.enableCruise = self.CC.usestockscc
 
-    if self.enabled_prev and not self.CC.enabled and not self.CP.enableCruise:
-      ret.cruiseState.enabled = False
-    self.enabled_prev = self.CC.enabled
 
-    if self.CS.brakeHold and not self.CC.usestockscc:
-      events.add(EventName.brakeHold)
+
+    #if self.CS.brakeHold and not self.CC.usestockscc:
+    #  events.add(EventName.brakeHold)
     if self.CS.parkBrake and not self.CC.usestockscc:
       events.add(EventName.parkBrake)
     if self.CS.brakeUnavailable and not self.CC.usestockscc:
@@ -310,7 +308,11 @@ class CarInterface(CarInterfaceBase):
     if not self.visiononlyWarning and self.CP.radarDisablePossible and self.CC.enabled and not self.low_speed_alert:
       events.add(EventName.visiononlyWarning)
       self.visiononlyWarning = True
-
+    if self.CC.acc_standstill_timer >= 200:
+      #events.add(EventName.standStill)
+      self.CP.standStill = True
+    else:
+      self.CP.standStill = False
     buttonEvents = []
     if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
       be = car.CarState.ButtonEvent.new_message()
@@ -352,9 +354,9 @@ class CarInterface(CarInterfaceBase):
         if b.type == ButtonType.cancel and b.pressed or self.CS.lkasbutton and opParams().get('enableLKASbutton'):
           events.add(EventName.buttonCancel)
           events.add(EventName.pcmDisable)
-        if b.type == ButtonType.altButton3 and b.pressed:
-          events.add(EventName.buttonCancel)
-          events.add(EventName.pcmDisable)
+        #if b.type == ButtonType.altButton3 and b.pressed:
+        #  events.add(EventName.buttonCancel)
+        #  events.add(EventName.pcmDisable)
 
     ret.events = events.to_msg()
 
