@@ -211,14 +211,14 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
-    if opParams().get('SccEnabled'):
-      ret.sccBus = 2 if 1057 in fingerprint[2] and opParams().get('SccHarnessPresent')  else 0 if 1057 in fingerprint[0] else -1
+    if True:
+      ret.sccBus = 2 if 1057 in fingerprint[2] and True  else 0 if 1057 in fingerprint[0] else -1
     else:
       ret.sccBus = -1
 
     ret.radarOffCan = (ret.sccBus == -1)
 
-    ret.openpilotLongitudinalControl = opParams().get('LongControlEnabled')  and not (ret.sccBus == 0)
+    ret.openpilotLongitudinalControl = True and not (ret.sccBus == 0)
 
     if ret.openpilotLongitudinalControl:
       ret.radarTimeStep = .05
@@ -233,7 +233,7 @@ class CarInterface(CarInterfaceBase):
                           CAR.KIA_CADENZA_HEV, CAR.GRANDEUR_HEV, CAR.KIA_NIRO_HEV, CAR.KONA_HEV]):
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunity
 
-    if ret.radarOffCan or (ret.sccBus == 2) or opParams().get('EnableOPwithCC'):
+    if ret.radarOffCan or (ret.sccBus == 2):
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc
 
     if ret.mdpsHarness or opParams().get('smartMDPS'):
@@ -252,9 +252,9 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = True
 
-    ret.radarDisablePossible = opParams().get('RadarDisableEnabled')
+    ret.radarDisablePossible = False
 
-    ret.enableCruise = opParams().get('EnableOPwithCC') and ret.sccBus == 0
+    ret.enableCruise = False and ret.sccBus == 0
 
     if ret.radarDisablePossible:
       ret.openpilotLongitudinalControl = True
