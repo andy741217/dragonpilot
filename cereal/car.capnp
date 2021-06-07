@@ -176,7 +176,7 @@ struct CarState {
   cruiseGapSet @41 :UInt8;
   #standStill @42 :Bool;
   
-  cruiseGap @4 : Int32;
+  cruiseGap @43 : Int32;
 
   # cruise state
   cruiseState @10 :CruiseState;
