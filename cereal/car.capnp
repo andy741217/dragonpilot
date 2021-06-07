@@ -175,8 +175,8 @@ struct CarState {
   brakeHold @40 :Bool;    # AutoHold
   cruiseGapSet @41 :UInt8;
   #standStill @42 :Bool;
-  limitSpeedmanual @43 :Bool;
-  cruiseGap @44 : Int32;
+  
+  cruiseGap @4 : Int32;
 
   # cruise state
   cruiseState @10 :CruiseState;
