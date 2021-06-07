@@ -174,7 +174,7 @@ struct CarState {
   radarDistance @39 :Float32;
   brakeHold @40 :Bool;    # AutoHold
   cruiseGapSet @41 :UInt8;
-  #standStill @42 :Bool;
+  standStill @43 :Bool;
   
   cruiseGap @42 : Int32;
 
