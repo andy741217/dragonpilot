@@ -252,7 +252,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = True
 
-    ret.radarDisablePossible = False
+    ret.radarDisablePossible = True
 
     ret.enableCruise = False and ret.sccBus == 0
 
