@@ -125,6 +125,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     neosUpdateRequiredDEPRECATED @88;
     modelLagWarningDEPRECATED @93;
     startupOneplusDEPRECATED @82;
+    standStill @112;
     startupFuzzyFingerprintDEPRECATED @97;
 
     # mapd
@@ -206,6 +207,11 @@ struct CarState {
   lkMode @38 :Bool;
   engineRPM @39 :Float32;
   cruiseActualEnabled @40 :Bool;
+  standStill @41 :Bool;
+  radarDistance @42 :Float32;
+  brakeHold @43 :Bool;    # AutoHold
+  cruiseGapSet @44 :UInt8;
+  limitSpeedmanual @45 :Bool;
 
   struct WheelSpeeds {
     # optional wheel speeds
@@ -348,7 +354,9 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
-
+    leadDistance @10:Float32;
+    leadvRel @11:Float32;
+    leadyRel @12:Float32;
     enum VisualAlert {
       # these are the choices from the Honda
       # map as good as you can for your car
@@ -454,7 +462,19 @@ struct CarParams {
   communityFeature @46: Bool;  # true if a community maintained feature is detected
   fingerprintSource @49: FingerprintSource;
   networkLocation @50 :NetworkLocation;  # Where Panda/C2 is integrated into the car's CAN network
-
+  enableCamera @63: Bool;
+  enableCruise @64: Bool;
+  mdpsHarness @65: Bool;
+  sasBus @66: Int8;
+  fcaBus @67: Int8;
+  bsmAvailable @68: Bool;
+  lfaAvailable @69: Bool;
+  sccBus @70: Int8;
+  radarDisablePossible @71: Bool;
+  lvrAvailable @72: Bool;
+  evgearAvailable @73: Bool;
+  emsAvailable @74: Bool;
+  standStill @75: Bool;
   struct SafetyConfig {
     safetyModel @0 :SafetyModel;
     safetyParam @1 :Int16;
@@ -471,6 +491,8 @@ struct CarParams {
     kiBP @2 :List(Float32);
     kiV @3 :List(Float32);
     kf @4 :Float32;
+    kfV @5 :List(Float32);
+    kfBP @6 :List(Float32);
   }
 
   struct LongitudinalPIDTuning {
@@ -480,6 +502,8 @@ struct CarParams {
     kiV @3 :List(Float32);
     deadzoneBP @4 :List(Float32);
     deadzoneV @5 :List(Float32);
+    kfBP @6 :List(Float32);
+    kfV @7 :List(Float32);
   }
 
   struct LateralINDITuning {
@@ -539,6 +563,7 @@ struct CarParams {
     hyundaiLegacy @23;
     hyundaiCommunity @24;
     stellantis @25;
+    hyundaiCommunityNonscc @26;
   }
 
   enum SteerControlType {
