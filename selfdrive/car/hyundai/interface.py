@@ -38,37 +38,37 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.4
     ret.steerLimitTimer = 1.5
-    ret.steerRatio = 13.25
+    ret.steerRatio = 16.5
     tire_stiffness_factor = 1.
 
     
     
     #andy longitudinal
-    #ret.stoppingControl = True
-    #ret.vEgoStopping = 1.0
-    #ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    #ret.longitudinalTuning.kpV = [1.8, 1.5, 1.3, 0.8, 0.5]
-    #ret.longitudinalTuning.kiBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
-    #ret.longitudinalTuning.kiV = [0.15, .055, .05, .045, .03]
-    #ret.stopAccel = 0.0
-    #ret.startAccel = 0.0
-    #ret.longitudinalActuatorDelayUpperBound = 1.0 # s
+    ret.stoppingControl = True
+    ret.vEgoStopping = 1.0
+    ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpV = [1.8, 1.5, 1.3, 0.8, 0.5]
+    ret.longitudinalTuning.kiBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 40. * CV.KPH_TO_MS, 100. * CV.KPH_TO_MS]
+    ret.longitudinalTuning.kiV = [0.15, .055, .05, .045, .03]
+    ret.stopAccel = 0.0
+    ret.startAccel = 0.0
+    ret.longitudinalActuatorDelayUpperBound = 1.0 # s
     
     #crwusiz longitudinal
-    ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [1.5, 0.94, 0.8, 0.48]
-    ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kiV = [0.18, 0.12]
-    ret.longitudinalActuatorDelayLowerBound = 0.15
-    ret.longitudinalActuatorDelayUpperBound = 0.2
-    ret.startAccel = -0.8
-    ret.stopAccel = -2.5
-    ret.startingAccelRate = 5.0  # brake_travel/s while releasing on restart
-    ret.stoppingDecelRate = 0.3  # brake_travel/s while trying to stop
-    ret.vEgoStopping = 0.6
-    ret.vEgoStarting = 0.5
+    #ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
+    #ret.longitudinalTuning.kpV = [1.5, 0.94, 0.8, 0.48]
+    #ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
+    #ret.longitudinalTuning.kiV = [0.18, 0.12]
+    #ret.longitudinalActuatorDelayLowerBound = 0.15
+    #ret.longitudinalActuatorDelayUpperBound = 0.2
+    #ret.startAccel = -0.8
+    #ret.stopAccel = -2.5
+    #ret.startingAccelRate = 5.0  # brake_travel/s while releasing on restart
+    #ret.stoppingDecelRate = 0.3  # brake_travel/s while trying to stop
+    #ret.vEgoStopping = 0.6
+    #ret.vEgoStarting = 0.5
 
-    ret.stoppingControl = True  
+    #ret.stoppingControl = True  
     
     
     eps_modified = False
