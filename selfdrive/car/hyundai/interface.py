@@ -181,14 +181,14 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-#    ret.mdpsHarness = opParams().get('MdpsHarnessEnabled')
-#    ret.sasBus = 0 if 688 in fingerprint[0] else 1
-#    ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
-#    ret.bsmAvailable = True if 1419 in fingerprint[0] else False
-#    ret.lfaAvailable = True if 1157 in fingerprint[2] else False 
-#    ret.lvrAvailable = True if 871 in fingerprint[0] else False
-#    ret.evgearAvailable = True if 882 in fingerprint[0] else False
-#    ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
+    ret.mdpsHarness = opParams().get('MdpsHarnessEnabled')
+    ret.sasBus = 0 if 688 in fingerprint[0] else 1
+    ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
+    ret.bsmAvailable = True if 1419 in fingerprint[0] else False
+    ret.lfaAvailable = True if 1157 in fingerprint[2] else False 
+    ret.lvrAvailable = True if 871 in fingerprint[0] else False
+    ret.evgearAvailable = True if 882 in fingerprint[0] else False
+    ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
     ret.sccBus = 2 if 1057 in fingerprint[2] else 0 if 1057 in fingerprint[0] else -1 
     ret.radarOffCan = (ret.sccBus == -1)
     ret.openpilotLongitudinalControl = (ret.sccBus == 2) and not (ret.sccBus == 0)
