@@ -38,7 +38,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
     ret.steerRateCost = 0.4
     ret.steerLimitTimer = 1.5
-    ret.steerRatio = 16.5
+    ret.steerRatio = 13.25
     tire_stiffness_factor = 1.
 
     
