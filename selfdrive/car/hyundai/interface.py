@@ -57,7 +57,7 @@ class CarInterface(CarInterfaceBase):
     #crwusiz longitudinal
     #ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
     #ret.longitudinalTuning.kpV = [1.5, 0.94, 0.8, 0.48]
-    #ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
+    #ret.longitudinalTuning.kiBP = [0., j130. * CV.KPH_TO_MS]
     #ret.longitudinalTuning.kiV = [0.18, 0.12]
     #ret.longitudinalActuatorDelayLowerBound = 0.15
     #ret.longitudinalActuatorDelayUpperBound = 0.2
@@ -136,7 +136,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.lqr.c = [1., 0.]
       ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
       ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
-      ret.lateralTuning.lqr.dcGain = 0.005
+      ret.lateralTuning.lqr.dcGain = 0.003
       
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
