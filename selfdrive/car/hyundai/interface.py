@@ -36,8 +36,9 @@ class CarInterface(CarInterfaceBase):
     ret.communityFeature = candidate not in [CAR.SONATA, CAR.PALISADE]
 
     ret.steerActuatorDelay = 0.3  # Default delay not used, check pathplanner for BPs
-    ret.steerRateCost = 0.5
-    ret.steerLimitTimer = 1.5.
+    ret.steerRateCost = 0.4
+    ret.steerLimitTimer = 1.5
+    ret.steerRatio = 16.5
     tire_stiffness_factor = 1.
 
     
@@ -74,71 +75,55 @@ class CarInterface(CarInterfaceBase):
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.766
-      ret.steerRatio = 16.55
     elif candidate in [CAR.SONATA, CAR.SONATA_HEV]:
       ret.mass = 1513. + STD_CARGO_KG
       ret.wheelbase = 2.84
-      ret.steerRatio = 13.27 * 1.15
     elif candidate in [CAR.SONATA_2019, CAR.SONATA_HEV_2019]:
       ret.mass = 4497. * CV.LB_TO_KG
       ret.wheelbase = 2.804
-      ret.steerRatio = 13.27 * 1.15
     elif candidate == CAR.PALISADE:
       ret.mass = 1999. + STD_CARGO_KG
       ret.wheelbase = 2.90
-      ret.steerRatio = 13.75 * 1.15
     elif candidate == CAR.KIA_SORENTO:
       ret.mass = 1985. + STD_CARGO_KG
       ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1
     elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 15.4
       ret.minSteerSpeed = 32 * CV.MPH_TO_MS
     elif candidate == CAR.ELANTRA_2020:
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 15.4
     elif candidate == CAR.HYUNDAI_GENESIS:
       ret.mass = 2060. + STD_CARGO_KG
       ret.wheelbase = 3.01
-      ret.steerRatio = 16.5
       ret.minSteerSpeed = 55 * CV.KPH_TO_MS
     elif candidate == CAR.GENESIS_G70:
       ret.mass = 1640.0 + STD_CARGO_KG
       ret.wheelbase = 2.84
-      ret.steerRatio = 13.56
     elif candidate == CAR.GENESIS_G80:
       ret.steerActuatorDelay = 0.4
       ret.steerRateCost = 0.45
       ret.mass = 2060. + STD_CARGO_KG
       ret.wheelbase = 3.01
-      ret.steerRatio = 16.5
     elif candidate == CAR.GENESIS_G90:
       ret.mass = 2060. + STD_CARGO_KG
       ret.wheelbase = 3.01
-      ret.steerRatio = 16.5
     elif candidate in [CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_HEV]:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
-      ret.steerRatio = 13.75 * 1.15
     elif candidate == CAR.KIA_STINGER:
       ret.mass = 1825. + STD_CARGO_KG
       ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.15
     elif candidate == CAR.KONA:
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73 * 1.15
     elif candidate in [CAR.KONA_HEV, CAR.KONA_EV]:
       ret.mass = 1685. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73 * 1.15
     elif candidate in [CAR.IONIQ_HEV, CAR.IONIQ_EV_LTD]:
       ret.mass = 1685. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 14.5
       ret.lateralTuning.init('lqr')
       ret.lateralTuning.lqr.scale = 1700.
       ret.lateralTuning.lqr.ki = 0.01
@@ -152,21 +137,16 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.KIA_FORTE:
       ret.mass = 3558. * CV.LB_TO_KG
       ret.wheelbase = 2.80
-      ret.steerRatio = 13.75 * 1.15
     elif candidate == CAR.KIA_CEED:
       ret.mass = 1350. + STD_CARGO_KG
       ret.wheelbase = 2.65
-      ret.steerRatio = 13.75 * 1.15
     elif candidate == CAR.KIA_SPORTAGE:
       ret.mass = 1985. + STD_CARGO_KG
       ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.15
     elif candidate == CAR.VELOSTER:
       ret.mass = 3558. * CV.LB_TO_KG # actual: 2987
       ret.wheelbase = 2.80 # actual: 2.649
-      ret.steerRatio = 13.75 * 1.15
     elif candidate in [CAR.KIA_NIRO_HEV, CAR.KIA_NIRO_EV]:
-      ret.steerRatio = 13.73
       ret.mass = 1737. + STD_CARGO_KG
       ret.wheelbase = 2.7
     elif candidate in [CAR.GRANDEUR, CAR.GRANDEUR_HEV]:
@@ -176,7 +156,6 @@ class CarInterface(CarInterfaceBase):
     elif candidate in [CAR.KIA_CADENZA, CAR.KIA_CADENZA_HEV]:
       ret.mass = 1575. + STD_CARGO_KG
       ret.wheelbase = 2.85
-      ret.steerRatio = 12.5 * 1.15
       
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
