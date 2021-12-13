@@ -143,13 +143,13 @@ class CarState(CarStateBase):
     ret.cruiseActualEnabled = ret.cruiseState.enabled
     
     if self.cruise_main_button != 0:
-      self.mainsw_check = 1
+      self.mainsw_check = 0
     # TODO: Find brake pressure
     ret.brake = 0
     ret.brakePressed = cp.vl["TCS13"]['DriverBraking'] != 0
     self.brakeUnavailable = cp.vl["TCS13"]['ACCEnable'] == 3
     if ret.brakePressed:
-      self.brake_check = 1
+      self.brake_check = 0
 
     # TODO: Check this
     ret.brakeLights = bool(cp.vl["TCS13"]['BrakeLight'] or ret.brakePressed)
