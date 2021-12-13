@@ -7,10 +7,8 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 
 class CarControllerParams:
-  #ACCEL_HYST_GAP = 0.02  # don't change accel command for small oscillations within this value
   ACCEL_MAX = 2.0
   ACCEL_MIN = -3.5
-  #ACCEL_SCALE = max(ACCEL_MAX, -ACCEL_MIN)
   
   def __init__(self, CP):
     self.STEER_MAX = 384
