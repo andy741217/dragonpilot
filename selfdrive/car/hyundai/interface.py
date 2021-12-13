@@ -6,7 +6,7 @@ from common.op_params import opParams
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import CAR, Buttons, Ecu, ECU_FINGERPRINT, FINGERPRINTS, CarControllerParams
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, get_safety_config
-#from selfdrive.car.hyundai.radar_interface import RADAR_START_ADDR
+from selfdrive.car.hyundai.radar_interface import RADAR_START_ADDR
 from selfdrive.car.interfaces import CarInterfaceBase
 from selfdrive.car.disable_ecu import disable_ecu
 from common.dp_common import common_interface_atl, common_interface_get_params_lqr
