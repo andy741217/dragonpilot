@@ -187,7 +187,7 @@ class CarInterface(CarInterfaceBase):
       ret.minSteerSpeed = 0.
     ret = common_interface_get_params_lqr(ret)
     
-    if Params().get('dp_hkg_smart_mdps') == b'1' and candidate in [CAR.IONIQ_HEV]:
+    if Params().get('dp_lqr') == b'1' and candidate in [CAR.IONIQ_HEV]:
       ret.lateralTuning.init('lqr')
       ret.lateralTuning.lqr.scale = 2500.
       ret.lateralTuning.lqr.ki = 0.01
