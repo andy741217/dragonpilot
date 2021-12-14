@@ -96,15 +96,15 @@ class CarController():
 
     self.enabled = enabled
      # gas and brake
-    apply_accel = actuators.accel if enabled else 0
-    if apply_accel < 0:
-      apply_accel = interp(apply_accel - CS.out.aEgo, [-1.0, -0.5], [2 * apply_accel, apply_accel])
+    #apply_accel = actuators.accel if enabled else 0
+    #if apply_accel < 0:
+    #  apply_accel = interp(apply_accel - CS.out.aEgo, [-1.0, -0.5], [2 * apply_accel, apply_accel])
       
-    apply_accel = clip(apply_accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+    #apply_accel = clip(apply_accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
     
-    jerk = clip(2.0 * (apply_accel - CS.out.aEgo), -12.7, 12.7)
+    #jerk = clip(2.0 * (apply_accel - CS.out.aEgo), -12.7, 12.7)
     
-    stopping = (actuators.longControlState == LongCtrlState.stopping)
+    #stopping = (actuators.longControlState == LongCtrlState.stopping)
 
      # Steering Torque
     new_steer = actuators.steer * self.p.STEER_MAX
@@ -247,6 +247,13 @@ class CarController():
      # 假如啟動OP long及SCC訊號不再CAN1或不存在，就發送SCC給原車
     if (CS.CP.sccBus == 2 or not self.usestockscc) and self.counter_init:
       if frame % 2 == 0:
+        apply_accel = actuators.accel if enabled else 0
+        #if apply_accel < 0:
+        #  apply_accel = interp(apply_accel - CS.out.aEgo, [-1.0, -0.5], [2 * apply_accel, apply_accel])
+        apply_accel = clip(apply_accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+        #jerk = clip(2.0 * (apply_accel - CS.out.aEgo), -12.7, 12.7)
+        stopping = (actuators.longControlState == LongCtrlState.stopping)
+        
         self.scc12cnt += 1
         self.scc12cnt %= 0xF
         self.scc11cnt += 1
