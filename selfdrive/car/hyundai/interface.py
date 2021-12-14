@@ -52,7 +52,9 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiV = [0.15, .055, .05, .045, .03]
     ret.stopAccel = 0.0
     ret.startAccel = 0.0
-    ret.longitudinalActuatorDelayUpperBound = 1.0 # s  
+    ret.longitudinalActuatorDelayUpperBound = 1.0 # s
+    ret.stoppingDecelRate = 0.5  # reach stopping target smoothly
+    #ret.startingAccelRate = 8.0  # release brakes fast
     
     
     eps_modified = False
